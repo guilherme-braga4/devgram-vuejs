@@ -5,24 +5,14 @@ console.log("TelaCadastro")
 </script>
 
 <template>
-  <div className="bbb">aaaa</div>
   <section v-bind:class="['paginaCadastro', 'paginaPublica']">
   <!-- <section className="paginaPublica"> -->
-            <div className="logoContainer desktop">
-                <Image
-                    src={imagemLogo}
-                    alt="logotipo"
-                    className="logo"
-                />
-            </div>
+            <!-- <div className="logoContainer desktop"> -->
+                <img alt="Logo Devagram" class="logo" src="../../public/imagens/logo.svg" width="125" height="125" />
+            <!-- </div> -->
             <div className="uploadImagemContainer">
                 <form onSubmit={aoSubmeter}>
-                    <!-- <UploadImagem
-                        imagemPreviewClassName="avatar avatarPreview"
-                        imagemPreview={imagem?.preview || imagemAvatar.src}
-                        setImagem={setImagem}
-                    /> -->
-
+                   
                     <input
                         texto="Nome Completo"
                         tipo="text"

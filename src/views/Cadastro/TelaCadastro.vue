@@ -1,31 +1,38 @@
 <script>
-
+import InputPublico from '../../components/inputPublico/InputPublico.vue'
 console.log("TelaCadastro")
-
+export default {
+  name: 'Cadastro',
+  components: {
+    InputPublico
+  }
+}
 </script>
 
 <template>
   <section v-bind:class="['paginaCadastro', 'paginaPublica']">
-  <!-- <section className="paginaPublica"> -->
-            <!-- <div className="logoContainer desktop"> -->
-                <img alt="Logo Devagram" class="logo" src="../../public/imagens/logo.svg" width="125" height="125" />
-            <!-- </div> -->
-            <div className="uploadImagemContainer">
+        <div className="logoContainer desktop">
+                <img 
+                alt="Logo Devagram" 
+                className="logo"
+                src="../../public/imagens/logo.svg" 
+                />
+        </div>
+        <div className="conteudoPaginaPublica">
                 <form onSubmit={aoSubmeter}>
-                   
-                    <input
+                    <InputPublico
                         texto="Nome Completo"
                         tipo="text"
                     />
-                    <input
+                    <InputPublico
                         texto="E-mail"
                         tipo="email"
                     />
-                    <input
+                    <InputPublico
                         texto="Senha"
                         tipo="password"
                     />
-                    <input
+                    <InputPublico
                         texto="Confirmar Senha"
                         tipo="password"
                     />
@@ -33,7 +40,7 @@ console.log("TelaCadastro")
                         texto="Cadastrar"
                         tipo="submit"
                     >
-                      AAAAAAAAAAAAAAAA
+                      Cadastrar
                     </button>
                 </form>
                 <div className="rodapePaginaPublica">

@@ -1,12 +1,35 @@
 <script>
 import InputPublico from '../../components/inputPublico/InputPublico.vue'
+import Botao from '../../components/botao/Botao.vue'
 console.log("TelaCadastro")
+
 export default {
   name: 'Cadastro',
   components: {
-    InputPublico
+    InputPublico, 
+    Botao
+  },
+  data () {
+     return {
+        user: {
+            nome: "",
+            email: "",
+            senha: "",
+            confirmar_senha: "",
+            label_teste: "123"
+        }
+    }
+  },
+  methods: {
+    submitForm(e) {
+
+      e.preventDefault()
+
+      console.log(this.user);
+    }
   }
 }
+
 </script>
 
 <template>
@@ -19,29 +42,39 @@ export default {
                 />
         </div>
         <div className="conteudoPaginaPublica">
-                <form onSubmit={aoSubmeter}>
+                <form>
                     <InputPublico
                         texto="Nome Completo"
                         tipo="text"
+                        v-model="user.nome"
+                        icone="user"
                     />
                     <InputPublico
                         texto="E-mail"
                         tipo="email"
+                        v-model="user.email"
+                        icone="envelope"
                     />
                     <InputPublico
                         texto="Senha"
                         tipo="password"
+                        v-model="user.senha"
+                        icone="key"
                     />
                     <InputPublico
                         texto="Confirmar Senha"
                         tipo="password"
+                        v-model="user.confirmar_senha"
+                        icone="key"
                     />
-                    <button
+                    <Botao
                         texto="Cadastrar"
                         tipo="submit"
+                        value="Enviar" 
+                        v-on:click="submitForm"
                     >
                       Cadastrar
-                    </button>
+                    </Botao>
                 </form>
                 <div className="rodapePaginaPublica">
                     <p>Já possui uma conta?</p>

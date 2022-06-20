@@ -1,4 +1,4 @@
-@import './variaveis.scss';
+@import 'variaveis.scss';
 
 * {
   font-family: $fontRegular;
@@ -108,9 +108,10 @@ body {
     width: 94%;
   }
 }
+@import '../components/botao/botao.scss';
+@import '../components/inputPublico/inputPublic.scss';
 
 @import './fonts.scss';
 
 @import './paginaPublica.scss';
 @import '../views/Cadastro/TelaCadastro.scss';
-@import '../components/inputPublico/inputPublic.scss'

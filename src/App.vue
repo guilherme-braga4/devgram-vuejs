@@ -1,14 +1,14 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import Cadastro from './views/Cadastro/TelaCadastro.vue'
+import Login from './components/login/Login.vue'
+
 </script>
 
 <template>
-  <!-- <RouterView /> -->
   <header className="container-root">
-    <Cadastro/>
+    <router-view></router-view>
   </header>
-  <!-- <RouterView /> -->
 </template>
 
 

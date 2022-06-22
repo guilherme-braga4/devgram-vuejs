@@ -2,7 +2,6 @@
 import InputPublico from '../../components/inputPublico/InputPublico.vue'
 import Botao from '../../components/botao/Botao.vue'
 import UploadImagem from '../../components/uploadImagem/UploadImagem.vue'
-import avatar from "../../public/imagens/avatar.svg";
 import envelope from "../../public/imagens/envelope.svg";
 import chave from "../../public/imagens/chave.svg";
 // import imagemUsuarioAtivo from "../../public/imagens/usuarioAtivo.svg";
@@ -19,13 +18,9 @@ export default {
   data () {
      return {
         user: {
-            nome: "",
             email: "",
             senha: "",
-            confirmar_senha: "",
-            label_teste: "123"
         },
-        user_icon: avatar,
         email_icon: envelope,
         password_icon: chave
     }
@@ -60,12 +55,6 @@ export default {
                 <form>
                     <UploadImagem/>
                     <InputPublico
-                        texto="Nome Completo"
-                        tipo="text"
-                        v-model="user.nome"
-                        :icone="user_icon"
-                    />
-                    <InputPublico
                         texto="E-mail"
                         tipo="email"
                         v-model="user.email"
@@ -77,14 +66,8 @@ export default {
                         v-model="user.senha"
                         :icone="password_icon"
                     />
-                    <InputPublico
-                        texto="Confirmar Senha"
-                        tipo="password"
-                        v-model="user.confirmar_senha"
-                        :icone="password_icon"
-                    />
                     <Botao
-                        texto="Cadastrar"
+                        texto="Login"
                         tipo="submit"
                         :desabilitado="!validarFormulario()"
                         v-on:click="submitForm"
@@ -92,11 +75,11 @@ export default {
                 </form>
                 <div className="rodapePaginaPublica">
                     <p>Já possui uma conta?</p>
-                    <router-link to="/">Faça seu login agora!</router-link>
+                    <router-link to="/cadastro">Faça seu cadastro agora!</router-link>
                 </div>
             </div>
     </section>
   </template>
 
-<style src="./TelaCadastro.scss" lang="sass" scoped/>
+<!-- <style src="./TelaCadastro.scss" lang="sass" scoped/> -->
 

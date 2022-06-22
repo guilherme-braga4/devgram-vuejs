@@ -6,6 +6,8 @@ import avatar from "../../public/imagens/avatar.svg";
 import envelope from "../../public/imagens/envelope.svg";
 import chave from "../../public/imagens/chave.svg";
 
+import { validarEmail, validarSenha, validarNome, validarConfirmacaoSenha } from "../../utils/validadores";
+
 import { useStore } from 'vuex';
 import { onMounted, computed } from "vue";
 
@@ -33,7 +35,6 @@ export default {
             email: "",
             senha: "",
             confirmar_senha: "",
-            label_teste: "123"
         },
         user_icon: avatar,
         email_icon: envelope,
@@ -47,8 +48,10 @@ export default {
     },
      validarFormulario () {
         return (
-            this.email == "gui@gmail.com"
-            && this.senha == 123
+            validarNome(this.user.nome)
+            && validarEmail(this.user.email)
+            && validarSenha(this.user.senha)
+            && validarConfirmacaoSenha(this.user.senha, this.user.confirmar_senha)
         );
     }
   }

@@ -4,6 +4,7 @@ import Botao from '../../components/botao/Botao.vue'
 import UploadImagem from '../../components/uploadImagem/UploadImagem.vue'
 import envelope from "../../public/imagens/envelope.svg";
 import chave from "../../public/imagens/chave.svg";
+import { validarEmail, validarSenha } from "../../utils/validadores";
 // import imagemUsuarioAtivo from "../../public/imagens/usuarioAtivo.svg";
 
 import { useStore } from 'vuex';
@@ -43,6 +44,12 @@ export default {
         return (
             this.email == "gui@gmail.com"
             && this.senha == "123"
+        );
+    },
+    validarFormulario () {
+        return (
+            validarEmail(this.user.email)
+            && validarSenha(this.user.senha)
         );
     }
   }

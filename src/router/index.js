@@ -7,12 +7,12 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'login',
+      name: 'Login',
       component: Login
     },
     {
       path: '/cadastro',
-      name: 'cadastro',
+      name: 'TelaCadastro',
       component: TelaCadastro
     },
   ]

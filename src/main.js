@@ -9,6 +9,7 @@ library.add(faUser, faEnvelope, faKey)
 
 const app = createApp(App)
 app.component('fa', FontAwesomeIcon)
+app.use(router)
 app.mount('#app')
 
-app.use(router)
+

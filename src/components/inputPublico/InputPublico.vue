@@ -5,7 +5,10 @@ export default {
     name: "InputPublico",
     props: {
         modelValue: '',
-        icone: ''
+        icone: {
+            default: '',
+            type: String
+        }
     },
     methods: {
         updateValue(event) {
@@ -19,9 +22,14 @@ export default {
 <template>
   <div className="inputPublicoContainer">
             <div className="inputPublico">
-                <fa :icon="icone" className="iconeInputPublico"/>
+                <img 
+                    :src="icone" 
+                    className="iconeInputPublico" 
+                    width="20"
+                    height="20"
+                />
                 <input type="text" :value="modelValue" @input="updateValue"/>
-            </div>
+            </div>  
         </div>
 </template>
 

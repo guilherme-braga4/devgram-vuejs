@@ -1,10 +1,37 @@
 <script>
-  console.log("botão");
+  export default {
+    props: {
+       type: {
+        default: 'button',
+        type: String
+        },
+      texto: {
+        default: '',
+        type: String
+        },
+      cor: {
+        default: 'primaria',
+        type: String
+      },
+      desabilitado: {
+        default: false,
+        type: Boolean
+      },
+      manipularClique: {
+
+      },
+
+    }
+  }
 </script>
 
 <template>
-  <button className="btn">
-     Cadastrar
+  <button 
+  className="btn primaria"
+  :v-on:click="manipularClique"
+  :disabled="disabled"
+  :type="type">
+     {{texto}}
   </button>
 </template>
 

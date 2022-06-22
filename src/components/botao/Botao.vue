@@ -29,7 +29,7 @@
   <button 
   className="btn primaria"
   :v-on:click="manipularClique"
-  :disabled="disabled"
+  :disabled="desabilitado"
   :type="type">
      {{texto}}
   </button>

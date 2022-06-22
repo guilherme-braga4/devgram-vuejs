@@ -5,6 +5,10 @@ import UploadImagem from '../../components/uploadImagem/UploadImagem.vue'
 import avatar from "../../public/imagens/avatar.svg";
 import envelope from "../../public/imagens/envelope.svg";
 import chave from "../../public/imagens/chave.svg";
+
+import { useStore } from 'vuex';
+import { onMounted, computed } from "vue";
+
 // import imagemUsuarioAtivo from "../../public/imagens/usuarioAtivo.svg";
 
 console.log("TelaCadastro")
@@ -16,6 +20,12 @@ export default {
     Botao, 
     UploadImagem
   },
+  setup () {
+    const store = useStore();
+    const estaSubmetendo = store.state.usuario.estaSubmetendo
+    console.log(estaSubmetendo)
+    return {estaSubmetendo}
+  },    
   data () {
      return {
         user: {
@@ -27,7 +37,7 @@ export default {
         },
         user_icon: avatar,
         email_icon: envelope,
-        password_icon: chave
+        password_icon: chave,
     }
   },
   methods: {
@@ -38,8 +48,7 @@ export default {
      validarFormulario () {
         return (
             this.email == "gui@gmail.com"
-            && this.senha == 123,
-            console.log("validando")
+            && this.senha == 123
         );
     }
   }
@@ -86,7 +95,7 @@ export default {
                     <Botao
                         texto="Cadastrar"
                         tipo="submit"
-                        :desabilitado="!validarFormulario()"
+                        :desabilitado="!validarFormulario() || estaSubmetendo"
                         v-on:click="submitForm"
                     />
                 </form>

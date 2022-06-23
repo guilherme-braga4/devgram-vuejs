@@ -8,12 +8,20 @@ import chave from "../../public/imagens/chave.svg";
 
 import { validarEmail, validarSenha, validarNome, validarConfirmacaoSenha } from "../../utils/validadores";
 
+import UsuarioService from "../../services/UsuarioService";
+
+
 import { useStore } from 'vuex';
 import { onMounted, computed } from "vue";
+
+
 
 // import imagemUsuarioAtivo from "../../public/imagens/usuarioAtivo.svg";
 
 console.log("TelaCadastro")
+
+
+const usuarioService = new UsuarioService();
 
 export default {
   name: 'Cadastro',
@@ -34,7 +42,6 @@ export default {
             nome: "",
             email: "",
             senha: "",
-            confirmar_senha: "",
         },
         user_icon: avatar,
         email_icon: envelope,
@@ -42,18 +49,49 @@ export default {
     }
   },
   methods: {
-    submitForm(e) {
-      e.preventDefault()
-      console.log(this.user);
-    },
-     validarFormulario () {
+    validarFormulario () {
         return (
             validarNome(this.user.nome)
             && validarEmail(this.user.email)
             && validarSenha(this.user.senha)
             && validarConfirmacaoSenha(this.user.senha, this.user.confirmar_senha)
         );
-    }
+    },
+    async submitForm(e) {
+      e.preventDefault()
+
+        if (!this.validarFormulario()) {
+            return;
+        }
+
+        this.state.estaSubmetendo = true
+  
+            try {
+            const corpoReqCadastro = new FormData();
+            corpoReqCadastro.append("nome", this.user.nome);
+            corpoReqCadastro.append("email", this.user.email);
+            corpoReqCadastro.append("senha", this.user.senha);
+
+            // if (imagem?.arquivo) {
+            //     corpoReqCadastro.append("file", imagem.arquivo);
+            // }
+
+            await usuarioService.cadastro(corpoReqCadastro);
+            await usuarioService.login({
+                login: this.user.email,
+                senha: this.user.senha
+            });
+            
+            this.$router.push({ path: "/" })
+            
+        } catch (error) {
+            alert(
+                "Erro ao cadastrar usuario. " + error?.response?.data?.erro
+            );
+        }
+
+        this.state.estaSubmetendo = false;
+    },
   }
 }
 

@@ -7,8 +7,12 @@ import chave from "../../public/imagens/chave.svg";
 import { validarEmail, validarSenha } from "../../utils/validadores";
 // import imagemUsuarioAtivo from "../../public/imagens/usuarioAtivo.svg";
 
+import UsuarioService from "../../services/UsuarioService";
+
 import { useStore } from 'vuex';
 import { onMounted, computed } from "vue";
+
+const usuarioService = new UsuarioService();
 
 console.log("TelaCadastro")
 
@@ -19,7 +23,7 @@ export default {
     Botao, 
     UploadImagem
   },
-    setup () {
+  setup () {
     const store = useStore();
     const estaSubmetendo = store.state.usuario.estaSubmetendo
     console.log(estaSubmetendo)
@@ -36,21 +40,38 @@ export default {
     }
   },
   methods: {
-    submitForm(e) {
-      e.preventDefault()
-      console.log(this.user);
-    },
-     validarFormulario () {
-        return (
-            this.email == "gui@gmail.com"
-            && this.senha == "123"
-        );
-    },
     validarFormulario () {
         return (
             validarEmail(this.user.email)
             && validarSenha(this.user.senha)
         );
+    },
+    async submitForm(e) {
+      e.preventDefault()
+  
+       if (!this.validarFormulario()) {
+            return;
+        }
+
+        this.estaSubmetendo = true;
+
+        try {
+            await usuarioService.login({
+                login: this.user.email,
+                senha: this.user.senha
+            });
+
+            // if (aposAutenticacao) {
+            //     aposAutenticacao();
+            // }
+            
+        } catch (error) {
+            alert(
+                "Erro ao realizar o login. " + error?.response?.data?.erro
+            );
+        }
+
+        this.estaSubmetendo = false
     }
   }
 }
@@ -68,7 +89,6 @@ export default {
         </div>
         <div className="conteudoPaginaPublica">
                 <form>
-                    <UploadImagem/>
                     <InputPublico
                         texto="E-mail"
                         tipo="email"

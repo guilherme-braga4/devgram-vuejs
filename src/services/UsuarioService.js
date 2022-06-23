@@ -2,7 +2,9 @@ import DevagramApiService from "./DevagramApiService";
 
 export default class UsuarioService extends DevagramApiService {
     async login(credenciais) {
+        console.log("dentro do login")
         const { data } = await this.post('/login', credenciais);
+        console.log("data login", data)
 
         localStorage.setItem("nome", data.nome);
         localStorage.setItem("email", data.email);

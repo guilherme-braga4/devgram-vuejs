@@ -6,11 +6,6 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'Login',
-      component: Login
-    },
-    {
       path: '/cadastro',
       name: 'TelaCadastro',
       component: TelaCadastro

@@ -9,21 +9,25 @@
 
 <script>
 import Login from './components/login/Login.vue'
+import Home from './components/home/Home.vue'
 import Cadastro from './views/Cadastro/TelaCadastro.vue'
+import comAutorizacao from './hoc/comAutorizacao.js'
 
 export default {
   data(){
     return {
-      token: localStorage.getItem('accessToken')
+      token: localStorage.getItem('token')
     }
   },
   components: {
     login : Login,
-    cadastro : Cadastro
+    cadastro : Cadastro,
+    home: comAutorizacao(Home)
   },
   methods: {
     setToken(e){
       this.token = e;
+      console.log("this.token APP", this.token)
     }
   }
 }

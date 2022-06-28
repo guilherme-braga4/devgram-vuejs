@@ -2,9 +2,6 @@ import UsuarioService from "../services/UsuarioService"
 import { h } from "@vue/runtime-core"
 import store from '../store/index'
 
-let usuarioLogado = store.state.usuario.usuarioLogado
-console.log("usuarioLogado", usuarioLogado)
-
 const usuarioService = new UsuarioService();
 
 function comAutorizacao(Componente) {
@@ -17,8 +14,8 @@ function comAutorizacao(Componente) {
             // router.replace('/');
             return null;
         }
-        usuarioLogado = usuarioService.obterInformacoesDoUsuarioLogado();
-         console.log("usuarioLogado 21", usuarioLogado)
+        store.state.usuario.usuarioLogado = usuarioService.obterInformacoesDoUsuarioLogado();
+        console.log("usuarioLogado 21", store.state.usuario.usuarioLogado)
         //usuario Logado é armazenado em um Estado
       }
     },

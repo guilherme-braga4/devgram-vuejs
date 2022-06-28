@@ -1,7 +1,6 @@
 export default {
   state: {
-    estaSubmetendo: false,
-    usuarioLogado: [],
+    listaDePostagens: []
   },
   getters: {
 

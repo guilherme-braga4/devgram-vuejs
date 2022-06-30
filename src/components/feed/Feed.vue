@@ -1,8 +1,7 @@
 <script>
-  console.log("Feed")
   import Postagem from './Postagem.vue'
   import { useStore } from 'vuex';
-  import { watchEffect } from 'vue'
+  import { reactive, onMounted, ref } from 'vue'
 
   import FeedService from "../../services/FeedService";
 
@@ -13,17 +12,15 @@
     components: {
       Postagem,
     },
-    data() {
-      return {
-        usuarioId: []
-      }
-    },
-    setup () {
+     setup () {
       const store = useStore();
-      watchEffect(async () => {
-        console.log("dentro do watchEffect do Feed")
-        const { data } = await feedService.carregarPostagens(store.state.usuario.usuarioLogado.id);
-        const postagensFormatadas = data.map((postagem) => (
+      const state = reactive({
+        listaDePostagens: [],
+      });
+
+    onMounted(async () => {
+      const { data } = await feedService.carregarPostagens(store.state.usuario.usuarioLogado.id);
+      const postagensFormatadas = data.map((postagem) => (
             {
                 id: postagem._id,
                 usuario: {
@@ -40,16 +37,16 @@
                 }))
             }
         ));
-        store.state.feed.listaDePostagens = postagensFormatadas
-      }, [])
-    }, 
+        state.listaDePostagens = postagensFormatadas
+    }) 
+      return {state}
+    },
   }
 </script>
 
 <template>
-  <div className="feedContainer largura30pctDesktop"  >
-    <h1>Feed</h1>
-      <Postagem/>
+  <div className="feedContainer largura30pctDesktop" v-for="item in state">
+      <Postagem :postagens="state"/>
   </div>
 </template>
 

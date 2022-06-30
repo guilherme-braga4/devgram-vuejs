@@ -1,9 +1,9 @@
 <script>
-  console.log("Postagem")
   import Comentario from './Comentario.vue'
   import Avatar from '../avatar/Avatar.vue'
   import { useStore } from 'vuex';
-  import { watchEffect } from 'vue'
+  import { reactive, onMounted, ref, watchEffect } from 'vue'
+
 
   import imgCurtir from '../../public/imagens/curtir.svg';
   import imgCurtido from '../../public/imagens/curtido.svg';
@@ -13,73 +13,79 @@
   import FeedService from "../../services/FeedService";
 
   const feedService = new FeedService();
-  // const store = useStore();
 
   export default {
     name: 'Postagem',
-    // props: {
-    //   dadosPostagem: {
-    //     type: String,
-    //     default: []
-    //   }
-    // },  
+    props: {
+      postagens: []
+    },  
     components: {
         Comentario, 
         Avatar,
     },
+    setup (props) {
+    //carrega a Lista de Postagens
+    let listaDePostagens = ref([])
+    let idPostagem = ref('')
+    let listaDeCurtidasPostagem = ref([''])
+    let listaDeComentariosDasPostagens = ref([])
+    let deveExibirSecaoParaComentar = ref(false)
+    let tamanhoAtualDaDescricao = ref(90)
+
+    let imagens = {
+        imagemCurtir: imgCurtir,
+        imagemCurtido: imgCurtido,
+        imagemComentarioAtivo: imgComentarioAtivo,
+        imagemComentarioCinza: imgComentarioCinza
+    }
+        
+    //precisamos esperar a API fazer o fetch (no Componente Pai), para então receber as props corretamente
+     watchEffect(() => {{
+        listaDePostagens.value = props.postagens.listaDePostagens
+        listaDeCurtidasPostagem.value = props.postagens.listaDePostagens.map((i) => i.curtidas)
+        listaDeComentariosDasPostagens.value = props.postagens.listaDePostagens.map((i) => i.comentarios)
+        idPostagem.value = listaDePostagens.value.map((i) => i.id)
+        return (
+            console.log("listaDePostagens", listaDePostagens.value),
+            console.log("listaDeCurtidasPostagem", listaDeCurtidasPostagem.value),
+            console.log("listaDeComentariosDasPostagens", listaDeComentariosDasPostagens.value),
+            console.log("idPostagem", idPostagem.value)
+        )
+     }}, [listaDePostagens])
+    
+        return {
+            listaDePostagens, 
+            listaDeComentariosDasPostagens,
+            idPostagem,
+            listaDeCurtidasPostagem,
+            imagens,
+            deveExibirSecaoParaComentar,
+            tamanhoAtualDaDescricao
+        }
+    },
+    
+    //---> temporario
      data(){
         return {
-           imagens: {
-            imagemCurtir: imgCurtir,
-            imagemCurtido: imgCurtido,
-            imagemComentarioAtivo: imgComentarioAtivo,
-            imagemComentarioCinza: imgComentarioCinza
-           },
-           valoresListaFeed: [],
-           comentarios: [],
-           idPostagem: '',
            usuarioLogado: [],
-           curtidasPostagem: {
-                default: "10",
-                type: String
-           },
-           comentariosPostagem: {
-                default: this.comentarios,
-                type: String
-           },
-           deveExibirSecaoParaComentar: {
-                default: false,
-                type: Boolean
-           },
-           tamanhoAtualDaDescricao: {
-                default: 90,
-                type: Number
-           }
         }
     },
     mounted(){
       const store = useStore();
-      watchEffect(() => {
         this.usuarioLogado = store.state.usuario.usuarioLogado
-        this.valoresListaFeed = store.state.feed.listaDePostagens
-        this.idPostagem = this.valoresListaFeed.map((i) => i.id)
-        this.curtidasPostagem = this.valoresListaFeed.map((i) => i.curtidas)
-        this.comentarios = this.valoresListaFeed.map((i) => i.comentarios)
-        console.log("valoresListaFeed", this.valoresListaFeed)
-        console.log("comentarios", this.comentarios)
-        console.log("curtidasPostagem", this.curtidasPostagem)
         console.log("Feed UsuarioLogado State", this.usuarioLogado)
-      })
     },
+    //---> temporario
+
     computed: {
         exibirDescricaoCompleta () {
-            this.tamanhoAtualDaDescricao(Number.MAX_SAFE_INTEGER)
+            tamanhoAtualDaDescricao(Number.MAX_SAFE_INTEGER)
         },
         descricaoMaiorQueLimite () {
-            return this.valoresListaFeed.descricao.length > this.tamanhoAtualDaDescricao;
+            return listaDePostagens.descricao.length > tamanhoAtualDaDescricao;
         },
         obterDescricao () {
-            let mensagem = this.valoresListaFeed.descricao.substring(0, this.tamanhoAtualDaDescricao);
+            let mensagem = listaDePostagens.descricao.substring(0, tamanhoAtualDaDescricao);
             if (this.descricaoMaiorQueLimite()) {
                 mensagem += '...';
             }
@@ -105,26 +111,22 @@
         async alterarCurtida () {
             try {
             await feedService.alterarCurtida(this.idPostagem);
-            console.log(this.usuarioLogadoCurtiuPostagem())
             if (this.usuarioLogadoCurtiuPostagem()) {
-                console.log("if do alterarCurtida")
                 // tiro o usuario logado da lista de curtidas
-                this.curtidasPostagem = this.curtidasPostagem.filter(idUsuarioQueCurtiu => idUsuarioQueCurtiu !== this.usuarioLogado.id)
+                this.listaDeCurtidasPostagem = this.listaDeCurtidasPostagem.filter(idUsuarioQueCurtiu => idUsuarioQueCurtiu !== this.usuarioLogado.id)
             }
             else { 
-                console.log("else do alterarCurtida")
-                this.curtidasPostagem = [...this.curtidasPostagem, this.usuarioLogado.id]
-                console.log("curtidasPostagem do alterarCurtida", this.curtidasPostagem)
+                this.listaDeCurtidasPostagem = [...this.listaDeCurtidasPostagem, this.usuarioLogado.id]
             }
         } catch (e) {
             alert(`Erro ao alterar a curtida! ` + (e?.response?.data?.erro || ''));
         }
         },
         usuarioLogadoCurtiuPostagem () {
-            return this.curtidasPostagem.includes(this.usuarioLogado.id)
+            return this.listaDeCurtidasPostagem[0].includes(this.usuarioLogado.id)
         },
          obterImagemCurtida () {
-             return this.usuarioLogadoCurtiuPostagem()
+            return this.usuarioLogadoCurtiuPostagem()
             ? this.imagens.imagemCurtido
             : this.imagens.imagemCurtir;
         },
@@ -141,7 +143,7 @@
 </script>
 
 <template>
-<div className="postagem" v-for="item in valoresListaFeed">
+<div className="postagem" v-for="item in listaDePostagens">
             <!-- <Link href={`/perfil/${usuarioLogado.id}`}> -->
                 <!-- <router-link path=""> -->
                 <section className="cabecalhoPostagem">
@@ -151,7 +153,7 @@
                 <!-- </router-link> -->
             <!-- </Link> -->
 
-            <div className="fotoDaPostagem" > 
+            <div className="fotoDaPostagem" >
                 <img :src="item.fotoDoPost" alt='foto da postagem' />
             </div>
 
@@ -170,7 +172,7 @@
                             v-on:click="exibirSecaoParaComentar()"
                         />
                     <span className="quantidadeCurtidas">
-                        Curtido por <strong> {{curtidasPostagem.length}} pessoas</strong>
+                        Curtido por <strong> {{item.curtidas.length}} pessoas</strong>
                     </span>
                 </div>
     
@@ -189,7 +191,7 @@
                 </div>
 
                 <div className="comentariosDaPublicacao">
-                        <div className="comentario" v-for="comentario in comentarios">
+                        <div className="comentario" v-for="(comentario, index) in listaDeComentariosDasPostagens[0]" :key="index">
                             <strong className="nomeUsuario">{{comentario.nome}}</strong>
                             <p className="descricao">{{comentario.mensagem}}</p>
                         </div>

@@ -18,8 +18,6 @@ import { onMounted, computed } from "vue";
 
 // import imagemUsuarioAtivo from "../../public/imagens/usuarioAtivo.svg";
 
-console.log("TelaCadastro")
-
 
 const usuarioService = new UsuarioService();
 

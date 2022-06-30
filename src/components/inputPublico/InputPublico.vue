@@ -1,6 +1,4 @@
 <script>
-console.log("InputPublico")
-
 export default {
     name: "InputPublico",
     props: {

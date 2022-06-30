@@ -1,5 +1,4 @@
 <script>
-  console.log("Comentario")
   import Avatar from '../avatar/Avatar.vue'
   import { useStore } from 'vuex';
 

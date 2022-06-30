@@ -8,7 +8,6 @@ function comAutorizacao(Componente) {
   console.log("cheguei em comAutorizacao")
   return {
     created() {
-      console.log('HOC component created')
       if (typeof window !== 'undefined') {
         if (!usuarioService.estaAutenticado()) {
             // router.replace('/');

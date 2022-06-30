@@ -1,5 +1,6 @@
 <script>
 import avatarImg from '../../public/imagens/avatar.svg';
+import imgCurtir from '../../public/imagens/curtir.svg';
 
   export default {
     name: 'Avatar',

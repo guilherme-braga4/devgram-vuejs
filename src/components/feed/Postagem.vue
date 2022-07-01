@@ -31,6 +31,9 @@
     let listaDeComentariosDasPostagens = ref([])
     let deveExibirSecaoParaComentar = ref(false)
     let tamanhoAtualDaDescricao = ref(90)
+    let receberComentario = ref('')
+
+    console.log("receberComentario", receberComentario)
 
     let imagens = {
         imagemCurtir: imgCurtir,
@@ -51,8 +54,17 @@
             console.log("listaDeComentariosDasPostagens", listaDeComentariosDasPostagens.value),
             console.log("idPostagem", idPostagem.value)
         )
-     }}, [listaDePostagens])
-    
+     }}, [listaDePostagens.value])
+
+     const comentar = async (comentario) => {
+            try {
+            await feedService.adicionarComentario(idPostagem.value, comentario);
+            deveExibirSecaoParaComentar.value = false;
+        } catch (e) {
+            alert(`Erro ao fazer comentario! ` + (e?.response?.data?.erro || ''));
+        }
+    }
+
         return {
             listaDePostagens, 
             listaDeComentariosDasPostagens,
@@ -60,7 +72,9 @@
             listaDeCurtidasPostagem,
             imagens,
             deveExibirSecaoParaComentar,
-            tamanhoAtualDaDescricao
+            tamanhoAtualDaDescricao,
+            receberComentario,
+            comentar
         }
     },
     
@@ -93,21 +107,6 @@
         },
     },
     methods: {
-        // async comentar (comentario) {
-        //     try {
-        //     await feedService.adicionarComentario(this.usuarioLogado.id, this.comentarios);
-        //     setDeveExibirSecaoParaComentar(false);
-        //     setComentariosPostagem([
-        //         ...comentariosPostagem,
-        //         {
-        //             nome: this.usuarioLogado.nome,
-        //             mensagem: comentario
-        //         }
-        //     ]);
-        // } catch (e) {
-        //     alert(`Erro ao fazer comentario! ` + (e?.response?.data?.erro || ''));
-        // }
-        // },
         async alterarCurtida () {
             try {
             await feedService.alterarCurtida(this.idPostagem);
@@ -200,7 +199,9 @@
 
                 <Comentario 
                     v-if="deveExibirSecaoParaComentar == true"
-                    :avatarUsuario="usuarioLogado.avatar" />
+                    v-model="receberComentario"
+                    :comentar="comentar"
+                />
         </div>
 </template>
 

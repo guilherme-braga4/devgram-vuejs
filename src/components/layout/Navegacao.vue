@@ -34,11 +34,7 @@ export default {
 
     const rotaAtiva = ref('home')
 
-    // onMounted() {
-    // watchEffect(() => {
-    //     definirRotaAtiva();
-    // }, [router.asPath]);
-    // }
+    // onBeforeMount(() => {})
 
     const definirRotaAtiva = () => {
         const chavesDoMapaDeRotas = Object.keys(mapaDeRotas);
@@ -49,16 +45,21 @@ export default {
         });
 
         if (indiceAtivo === -1) {
-            setRotaAtiva('home');
+            rotaAtiva.value = 'home'
         } else {
-            setRotaAtiva(chavesDoMapaDeRotas[indiceAtivo]);
+            rotaAtiva.value = chavesDoMapaDeRotas[indiceAtivo]
         }
     }
+
+    watchEffect(() => {
+        definirRotaAtiva();
+    }, [router.asPath]);
+
 
     const obterImagem = (nomeRota) => {
         const rotaAtivada = mapaDeRotas[nomeRota];
 
-        if (rotaAtiva === nomeRota) {
+        if (rotaAtiva.value === nomeRota) {
             return rotaAtivada.imagemAtivo;
         }
 
@@ -66,7 +67,7 @@ export default {
     }
 
     const aoClicarNoIcone = (nomeRota) => {
-        setRotaAtiva(nomeRota);
+        rotaAtiva.value = nomeRota;
         router.push(mapaDeRotas[nomeRota].rotasAtivacao[0])
     }
 

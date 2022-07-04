@@ -1,6 +1,8 @@
 import UsuarioService from "../services/UsuarioService"
 import { h } from "@vue/runtime-core"
 import store from '../store/index'
+import Cabecalho from '../components/layout/Cabecalho.vue'
+
 
 const usuarioService = new UsuarioService();
 
@@ -8,6 +10,7 @@ function comAutorizacao(Componente) {
   console.log("cheguei em comAutorizacao")
   return {
     created() {
+      console.log('HOC component created')
       if (typeof window !== 'undefined') {
         if (!usuarioService.estaAutenticado()) {
             // router.replace('/');
@@ -20,9 +23,7 @@ function comAutorizacao(Componente) {
     },
     render() {
       return (
-      // h(Cabecalho)
-      h(Componente)
-      // h(Rodape)
+        h(Componente)
       )
     }
   }

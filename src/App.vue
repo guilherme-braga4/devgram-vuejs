@@ -1,8 +1,9 @@
 <template>
   <header className="container-root">
     <RouterView></RouterView>
-    <home v-if="token" @token="setToken"/>
-    <login v-else="token" @token="setToken"/>
+    <cabecalho v-if="token"/>
+      <home v-if="token" @token="setToken"/>
+      <login v-else="token" @token="setToken"/>
   </header>
 </template>
 
@@ -10,6 +11,7 @@
 <script>
 import Login from './components/login/Login.vue'
 import Home from './components/home/Home.vue'
+import Cabecalho from './components/layout/Cabecalho.vue'
 import Cadastro from './views/Cadastro/TelaCadastro.vue'
 import comAutorizacao from './hoc/comAutorizacao.js'
 
@@ -22,7 +24,8 @@ export default {
   components: {
     login : Login,
     cadastro : Cadastro,
-    home: comAutorizacao(Home)
+    home: comAutorizacao(Home),
+    cabecalho: Cabecalho
   },
   methods: {
     setToken(e){

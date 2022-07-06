@@ -71,6 +71,7 @@ export default {
 
     const escreverDescricao = (e) => {
         const valorAtual = e.target.value;
+        console.log("valorAtual", valorAtual)
         if (valorAtual.length >= limiteDaDescricao) {
             return;
         }
@@ -157,21 +158,19 @@ export default {
                             />
                         </div>
 
-
-
                             <div className="segundaEtapa" v-else="estaNaEtapaUm()">
                                 <UploadImagem
                                     :imagem="imagem"
                                     :imagemPreview="imagem?.preview"
+                                    v-model="imagem"
                                 />
-
                                 <textarea
-                                    rows={3}
-                                    value={descricao}
+                                    :rows="3"
+                                    :value="descricao"
                                     placeholder='Escreva uma legenda...'
-                                    onChange={escreverDescricao}
+                                    @input="escreverDescricao"
                                 ></textarea>
-                                
+                                <hr className='linhaDivisoria' />
                             </div>
             </div>
         </div>

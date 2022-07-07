@@ -113,8 +113,10 @@ body {
 @import '../components/feed/feed.scss';
 @import '../components/layout/cabecalho.scss';
 @import '../components/layout/rodape.scss';
+@import '../components/cabecalhoComAcoes/cabecalhoComAcoes.scss';
 
 @import './fonts.scss';
 
 @import './paginaPublica.scss';
 @import '../views/Cadastro/TelaCadastro.scss';
+@import '../views/Publicacao/TelaPublicacao.scss';

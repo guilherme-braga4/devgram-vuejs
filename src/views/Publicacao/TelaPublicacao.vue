@@ -1,7 +1,7 @@
 <script>
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, computed } from 'vue'
 import Botao from '../../components/botao/Botao.vue'
-// import CabecalhoComAcoes from "../../componentes/cabecalhoComAcoes";
+import CabecalhoComAcoes from "../../components/cabecalhoComAcoes/CabecalhoComAcoes.vue";
 import UploadImagem from "../../components/uploadImagem/UploadImagem.vue"
 import imagemPublicacao from '../../public/imagens/imagemPublicacao.svg';
 import imagemSetaEsquerda from '../../public/imagens/setaEsquerda.svg';
@@ -15,20 +15,19 @@ const feedService = new FeedService();
 export default {
   name: 'Publicacao',
   components: {
-    Botao, UploadImagem
+    Botao, 
+    UploadImagem, 
+    CabecalhoComAcoes
   },
   setup() {
     const imagem = ref('')
     const descricao = ref('')
     const inputImagem = ref('')
-    const etapaAtual = ref('')
+    const etapaAtual = ref(1)
 
-    watchEffect(() => {console.log("imagem", imagem.value.preview)}, [imagem.value])
+    watchEffect(() => console.log("imagem", imagem.value.arquivo))
 
-    console.log("imagem", imagem.value)
-
-    const estaNaEtapaUm = () => etapaAtual.value = 1;
-    console.log(estaNaEtapaUm())
+    const estaNaEtapaUm = () => etapaAtual.value === 1;
 
     const obterTextoEsquerdaCabecalho = () => {
         if (estaNaEtapaUm() && imagem) {
@@ -51,6 +50,7 @@ export default {
     }
 
     const aoClicarAcaoEsquerdaCabecalho = () => {
+        console.log("aoClicarAcaoEsquerdaCabecalho", aoClicarAcaoEsquerdaCabecalho)
         if (estaNaEtapaUm()) {
             inputImagem.value = null;
             imagem.value = null;
@@ -79,14 +79,14 @@ export default {
         descricao.value = valorAtual;
     }
 
-    const obterClassNameCabecalho = () => {
+    const obterClassNameCabecalho = computed(() => {
         if (estaNaEtapaUm()) {
             return 'primeiraEtapa';
         }
 
         return 'segundaEtapa';
-    }
-
+    })
+        
     const publicar = async () => {
         try {
             if (!validarFormulario()) {
@@ -107,12 +107,13 @@ export default {
 
     const validarFormulario = () => {
         return (
-            descricao.length >= descricaoMinima
-            && imagem?.arquivo
+            descricao.value.length >= descricaoMinima
+            && imagem.value.arquivo
         );
     }
 
     return {
+      etapaAtual,
       estaNaEtapaUm,
       obterClassNameCabecalho,
       escreverDescricao,
@@ -130,15 +131,15 @@ export default {
 
 <template>
     <div className="paginaPublicacao largura30pctDesktop">
-            <!-- <CabecalhoComAcoes
-                className={obterClassNameCabecalho()}
-                iconeEquerda={estaNaEtapaUm() ? null : imagemSetaEsquerda}
-                textoEsquerda={obterTextoEsquerdaCabecalho()}
-                aoClicarAcaoEsquerda={aoClicarAcaoEsquerdaCabecalho}
-                elementoDireita={obterTextoDireitaCabecalho()}
-                aoClicarElementoDireita={aoClicarAcaoDireitaCabecalho}
+            <CabecalhoComAcoes
+                :class="obterClassNameCabecalho"
+                :iconeEquerda="estaNaEtapaUm() ? null : imagemSetaEsquerda"
+                :textoEsquerda="obterTextoEsquerdaCabecalho()"
+                :aoClicarAcaoEsquerda="aoClicarAcaoEsquerdaCabecalho"
+                :elementoDireita="obterTextoDireitaCabecalho()"
+                :aoClicarElementoDireita="aoClicarAcaoDireitaCabecalho"
                 titulo='Nova publicação'
-            /> -->
+            />
 
             <hr className='linhaDivisoria' />
 
@@ -153,12 +154,12 @@ export default {
                             />
                             <span className="desktop textoDragAndDrop">Arraste sua foto aqui!</span>
                             <Botao
-                                texto='Selecionar uma imagem'
+                                texto='Selecionar umaimagem'
                                 :manipularClique="() => inputImagem?.click()"
                             />
                         </div>
 
-                            <div className="segundaEtapa" v-else="estaNaEtapaUm()">
+                            <div className="segundaEtapa" v-else>
                                 <UploadImagem
                                     :imagem="imagem"
                                     :imagemPreview="imagem?.preview"
@@ -170,7 +171,6 @@ export default {
                                     placeholder='Escreva uma legenda...'
                                     @input="escreverDescricao"
                                 ></textarea>
-                                <hr className='linhaDivisoria' />
                             </div>
             </div>
         </div>

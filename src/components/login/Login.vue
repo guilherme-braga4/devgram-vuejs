@@ -1,4 +1,5 @@
 <script>
+import { onMounted, computed, ref, reactive } from "vue";
 import InputPublico from '../../components/inputPublico/InputPublico.vue'
 import Botao from '../../components/botao/Botao.vue'
 import UploadImagem from '../../components/uploadImagem/UploadImagem.vue'
@@ -9,12 +10,7 @@ import { validarEmail, validarSenha } from "../../utils/validadores";
 
 import UsuarioService from "../../services/UsuarioService";
 
-import { useStore } from 'vuex';
-import { onMounted, computed } from "vue";
-
 const usuarioService = new UsuarioService();
-
-console.log("TelaCadastro")
 
 export default {
   name: 'Cadastro',
@@ -24,68 +20,61 @@ export default {
     UploadImagem
   },
   setup () {
-    const store = useStore();
-    const estaSubmetendo = store.state.usuario.estaSubmetendo
-    console.log(estaSubmetendo)
-    return {estaSubmetendo}
-  },  
-  data () {
-     return {
-        user: {
+    const estaSubmetendo = ref(false)
+    const user = reactive({
             email: "",
             senha: "",
-        },
-        email_icon: envelope,
-        password_icon: chave
-    }
-  },
-  methods: {
-    validarFormulario () {
+    })
+
+    const validarFormulario = () => {
         return (
-            validarEmail(this.user.email)
-            && validarSenha(this.user.senha)
+            validarEmail(user.email)
+            && validarSenha(user.senha)
         );
-    },
-    async submitForm(e) {
-      e.preventDefault()
+    }
+
+    console.log("user", user)
+
+    const submitForm = async (event) => {
+        event.preventDefault()
   
-       if (!this.validarFormulario()) {
+       if (!validarFormulario()) {
             return;
         }
 
-        this.estaSubmetendo = true;
+        estaSubmetendo.value = true;
 
         try {
             await usuarioService.login({
-                login: this.user.email,
-                senha: this.user.senha
+                login: user.email,
+                senha: user.senha
             });
-
-            // if (aposAutenticacao) {
-            //     aposAutenticacao();
-            // }
-            
         } catch (error) {
             alert(
                 "Erro ao realizar o login. " + error?.response?.data?.erro
             );
         }
-
-        this.estaSubmetendo = false
+        estaSubmetendo.value = false
     }
-  }
+      return {
+        user,
+        envelope,
+        chave,
+        submitForm,
+        validarFormulario
+        }
+    }  
 }
-
 </script>
 
 <template>
   <section v-bind:class="['paginaCadastro', 'paginaPublica']">
         <div className="logoContainer desktop">
-                <img 
+            <img 
                 alt="Logo Devagram" 
                 className="logo"
                 src="../../public/imagens/logo.svg" 
-                />
+            />
         </div>
         <div className="conteudoPaginaPublica">
                 <form>
@@ -93,19 +82,19 @@ export default {
                         texto="E-mail"
                         tipo="email"
                         v-model="user.email"
-                        :icone="email_icon"
+                        :icone="envelope"
                     />
                     <InputPublico
                         texto="Senha"
                         tipo="password"
                         v-model="user.senha"
-                        :icone="password_icon"
+                        :icone="chave"
                     />
                     <Botao
                         texto="Login"
                         tipo="submit"
                         :desabilitado="!validarFormulario() || estaSubmetendo"
-                        v-on:click="submitForm"
+                        v-on:click="submitForm($event)"
                     />
                 </form>
                 <div className="rodapePaginaPublica">
@@ -116,5 +105,4 @@ export default {
     </section>
   </template>
 
-<!-- <style src="./TelaCadastro.scss" lang="sass" scoped/> -->
 

@@ -2,7 +2,7 @@
   import Comentario from './Comentario.vue'
   import Avatar from '../avatar/Avatar.vue'
   import { useStore } from 'vuex';
-  import { reactive, onMounted, ref, watchEffect } from 'vue'
+  import { reactive, onMounted, ref, watchEffect, inject, computed } from 'vue'
 
 
   import imgCurtir from '../../public/imagens/curtir.svg';
@@ -24,46 +24,92 @@
         Avatar,
     },
     setup (props) {
+    const usuarioLogado = inject('usuarioLogado')
+    console.log(usuarioLogado)
+    
     //carrega a Lista de Postagens
-    let listaDePostagens = ref([])
-    let idPostagem = ref('')
-    let listaDeCurtidasPostagem = ref([''])
-    let listaDeComentariosDasPostagens = ref([])
-    let deveExibirSecaoParaComentar = ref(false)
-    let tamanhoAtualDaDescricao = ref(90)
-    let receberComentario = ref('')
+    const listaDePostagens = ref([])
+    const idPostagem = ref('')
+    const listaDeCurtidasPostagem = ref([''])
+    const listaDeComentariosDasPostagens = ref([])
+    const deveExibirSecaoParaComentar = ref(false)
+    const tamanhoAtualDaDescricao = ref(90)
+    const receberComentario = ref('')
 
     console.log("receberComentario", receberComentario)
 
-    let imagens = {
+    const imagens = {
         imagemCurtir: imgCurtir,
         imagemCurtido: imgCurtido,
         imagemComentarioAtivo: imgComentarioAtivo,
         imagemComentarioCinza: imgComentarioCinza
     }
         
-    //precisamos esperar a API fazer o fetch (no Componente Pai), para então receber as props corretamente
+    //---->>> esperar a API fazer o fetch (no Componente Pai), para então receber as props corretamente
      watchEffect(() => {{
         listaDePostagens.value = props.postagens.listaDePostagens
         listaDeCurtidasPostagem.value = props.postagens.listaDePostagens.map((i) => i.curtidas)
         listaDeComentariosDasPostagens.value = props.postagens.listaDePostagens.map((i) => i.comentarios)
         idPostagem.value = listaDePostagens.value.map((i) => i.id)
-        return (
-            console.log("listaDePostagens", listaDePostagens.value),
-            console.log("listaDeCurtidasPostagem", listaDeCurtidasPostagem.value),
-            console.log("listaDeComentariosDasPostagens", listaDeComentariosDasPostagens.value),
-            console.log("idPostagem", idPostagem.value)
-        )
-     }}, [listaDePostagens.value])
+     }}, [props.postagens])
+     //---->>>
+
+     const alterarCurtida = async () => {
+        try {
+            await feedService.alterarCurtida(idPostagem.value);
+            if (usuarioLogadoCurtiuPostagem()) {
+                // tiro o usuario logado da lista de curtidas
+                console.log("alterarCurtida if")
+                listaDeCurtidasPostagem.value = listaDeCurtidasPostagem.value.filter(idUsuarioQueCurtiu => idUsuarioQueCurtiu !== usuarioLogado.id)
+            }
+            else { 
+                console.log("alterarCurtida else")
+                console.log(listaDeCurtidasPostagem.value)
+                listaDeCurtidasPostagem.value.push(usuarioLogado.id)
+            }
+        } catch (e) {
+            alert(`Erro ao alterar a curtida! ` + (e?.response?.data?.erro || ''));
+        }
+    }
 
      const comentar = async (comentario) => {
-            try {
+        try {
             await feedService.adicionarComentario(idPostagem.value, comentario);
             deveExibirSecaoParaComentar.value = false;
         } catch (e) {
             alert(`Erro ao fazer comentario! ` + (e?.response?.data?.erro || ''));
         }
     }
+
+    const usuarioLogadoCurtiuPostagem = () => listaDeCurtidasPostagem.value.includes(usuarioLogado.id)
+
+    const obterImagemCurtida = () => {
+        return usuarioLogadoCurtiuPostagem()
+            ? imagens.imagemCurtido
+            : imagens.imagemCurtir;
+    }
+
+    const obterImagemComentario = () => {
+        return deveExibirSecaoParaComentar.value
+            ? imagens.imagemComentarioAtivo
+            : imagens.imagemComentarioCinza;
+    }
+
+    const exibirSecaoParaComentar = () => {
+        return deveExibirSecaoParaComentar.value = !deveExibirSecaoParaComentar.value
+    }
+
+    const exibirDescricaoCompleta = computed(() => tamanhoAtualDaDescricao(Number.MAX_SAFE_INTEGER))
+
+    const descricaoMaiorQueLimite = computed(() => listaDePostagens.descricao.length > tamanhoAtualDaDescricao)
+
+    const obterDescricao = computed(() => {
+        let mensagem = listaDePostagens.descricao.substring(0, tamanhoAtualDaDescricao);
+            if (descricaoMaiorQueLimite()) {
+                mensagem += '...';
+            }
+            return mensagem;
+    })
 
         return {
             listaDePostagens, 
@@ -74,70 +120,17 @@
             deveExibirSecaoParaComentar,
             tamanhoAtualDaDescricao,
             receberComentario,
-            comentar
+            comentar,
+            alterarCurtida,
+            usuarioLogadoCurtiuPostagem,
+            exibirDescricaoCompleta,
+            obterDescricao,
+            obterImagemCurtida,
+            obterImagemComentario,
+            exibirSecaoParaComentar,
+            usuarioLogado
         }
     },
-    
-    //---> temporario
-     data(){
-        return {
-           usuarioLogado: [],
-        }
-    },
-    mounted(){
-      const store = useStore();
-        this.usuarioLogado = store.state.usuario.usuarioLogado
-        console.log("Feed UsuarioLogado State", this.usuarioLogado)
-    },
-    //---> temporario
-
-    computed: {
-        exibirDescricaoCompleta () {
-            tamanhoAtualDaDescricao(Number.MAX_SAFE_INTEGER)
-        },
-        descricaoMaiorQueLimite () {
-            return listaDePostagens.descricao.length > tamanhoAtualDaDescricao;
-        },
-        obterDescricao () {
-            let mensagem = listaDePostagens.descricao.substring(0, tamanhoAtualDaDescricao);
-            if (this.descricaoMaiorQueLimite()) {
-                mensagem += '...';
-            }
-            return mensagem;
-        },
-    },
-    methods: {
-        async alterarCurtida () {
-            try {
-            await feedService.alterarCurtida(this.idPostagem);
-            if (this.usuarioLogadoCurtiuPostagem()) {
-                // tiro o usuario logado da lista de curtidas
-                this.listaDeCurtidasPostagem = this.listaDeCurtidasPostagem.filter(idUsuarioQueCurtiu => idUsuarioQueCurtiu !== this.usuarioLogado.id)
-            }
-            else { 
-                this.listaDeCurtidasPostagem = [...this.listaDeCurtidasPostagem, this.usuarioLogado.id]
-            }
-        } catch (e) {
-            alert(`Erro ao alterar a curtida! ` + (e?.response?.data?.erro || ''));
-        }
-        },
-        usuarioLogadoCurtiuPostagem () {
-            return this.listaDeCurtidasPostagem[0].includes(this.usuarioLogado.id)
-        },
-         obterImagemCurtida () {
-            return this.usuarioLogadoCurtiuPostagem()
-            ? this.imagens.imagemCurtido
-            : this.imagens.imagemCurtir;
-        },
-        obterImagemComentario () {
-            return this.deveExibirSecaoParaComentar
-            ? this.imagens.imagemComentarioAtivo
-            : this.imagens.imagemComentarioCinza;
-        },
-        exibirSecaoParaComentar() {
-            return this.deveExibirSecaoParaComentar = !this.deveExibirSecaoParaComentar
-        }
-    }
   }
 </script>
 

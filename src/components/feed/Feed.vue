@@ -1,8 +1,6 @@
 <script>
   import Postagem from './Postagem.vue'
-  import { useStore } from 'vuex';
-  import { reactive, onMounted, ref } from 'vue'
-
+  import { reactive, onMounted, ref, inject } from 'vue'
   import FeedService from "../../services/FeedService";
 
   const feedService = new FeedService();
@@ -13,13 +11,14 @@
       Postagem,
     },
      setup () {
-      const store = useStore();
       const state = reactive({
         listaDePostagens: [],
       });
 
+    const usuarioLogado = inject('usuarioLogado')
+
     onMounted(async () => {
-      const { data } = await feedService.carregarPostagens(store.state.usuario.usuarioLogado.id);
+      const { data } = await feedService.carregarPostagens(usuarioLogado.id);
       const postagensFormatadas = data.map((postagem) => (
             {
                 id: postagem._id,

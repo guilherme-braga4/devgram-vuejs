@@ -1,8 +1,8 @@
 <template>
   <header className="container-root">
-    <RouterView></RouterView>
-    <cabecalho v-if="token"/>
-      <home v-if="token" @token="setToken"/>
+    <!-- <cabecalho v-if="token"/> -->
+      <RouterView v-if="token" @token="setToken"></RouterView>
+      <!-- <home v-if="token" @token="setToken"/> -->
       <login v-else="token" @token="setToken"/>
   </header>
 </template>
@@ -12,29 +12,38 @@
 import Login from './components/login/Login.vue'
 import Home from './components/home/Home.vue'
 import Cabecalho from './components/layout/Cabecalho.vue'
-import Cadastro from './views/Cadastro/TelaCadastro.vue'
-import comAutorizacao from './hoc/comAutorizacao.js'
+import router from './router/index'
+import UsuarioService from './services/UsuarioService'
+import { provide } from 'vue'
 
 export default {
-  data(){
-    return {
-      token: localStorage.getItem('token')
-    }
-  },
   components: {
     login : Login,
-    cadastro : Cadastro,
-    home: comAutorizacao(Home),
-    cabecalho: Cabecalho
+    home: Home,
+    cabecalho: Cabecalho,
   },
-  methods: {
-    setToken(e){
-      this.token = e;
-      console.log("this.token APP", this.token)
+  setup () {
+    const usuarioService = new UsuarioService();
+
+    if (typeof window !== 'undefined') {
+            if (!usuarioService.estaAutenticado()) {
+                router.replace('/');
+                return null;
+            }
+
+    const usuarioLogado = usuarioService.obterInformacoesDoUsuarioLogado();
+    provide('usuarioLogado', usuarioLogado)
+
+    const token = localStorage.getItem('token')
+    const setToken = (e) => {token = e}
+
+    return {
+      token,
+      usuarioLogado
     }
   }
 }
-
+}
 </script>
 
 

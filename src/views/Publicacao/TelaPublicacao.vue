@@ -1,5 +1,5 @@
 <script>
-import { ref, watchEffect, computed } from 'vue'
+import { ref, watchEffect, computed, inject  } from 'vue'
 import Botao from '../../components/botao/Botao.vue'
 import CabecalhoComAcoes from "../../components/cabecalhoComAcoes/CabecalhoComAcoes.vue";
 import UploadImagem from "../../components/uploadImagem/UploadImagem.vue"
@@ -24,6 +24,9 @@ export default {
     const descricao = ref('')
     const inputImagem = ref('')
     const etapaAtual = ref(1)
+
+    const teste = inject('usuarioLogado')
+    console.log("teste Injected", teste)
 
     watchEffect(() => console.log("imagem", imagem.value.arquivo))
 

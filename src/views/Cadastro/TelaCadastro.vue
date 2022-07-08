@@ -1,22 +1,16 @@
 <script>
+import { onMounted, computed, reactive, ref } from "vue";
 import InputPublico from '../../components/inputPublico/InputPublico.vue'
 import Botao from '../../components/botao/Botao.vue'
 import UploadImagem from '../../components/uploadImagem/UploadImagem.vue'
 import avatar from "../../public/imagens/avatar.svg";
 import envelope from "../../public/imagens/envelope.svg";
 import chave from "../../public/imagens/chave.svg";
+import router from '../../router/index'
 
 import { validarEmail, validarSenha, validarNome, validarConfirmacaoSenha } from "../../utils/validadores";
 
 import UsuarioService from "../../services/UsuarioService";
-
-
-import { useStore } from 'vuex';
-import { onMounted, computed } from "vue";
-
-
-
-// import imagemUsuarioAtivo from "../../public/imagens/usuarioAtivo.svg";
 
 
 const usuarioService = new UsuarioService();
@@ -29,46 +23,36 @@ export default {
     UploadImagem
   },
   setup () {
-    const store = useStore();
-    const estaSubmetendo = store.state.usuario.estaSubmetendo
-    console.log(estaSubmetendo)
-    return {estaSubmetendo}
-  },    
-  data () {
-     return {
-        user: {
+    const estaSubmetendo = ref(false)
+    const user = reactive({
             nome: "",
             email: "",
             senha: "",
-        },
-        user_icon: avatar,
-        email_icon: envelope,
-        password_icon: chave,
-    }
-  },
-  methods: {
-    validarFormulario () {
-        return (
-            validarNome(this.user.nome)
-            && validarEmail(this.user.email)
-            && validarSenha(this.user.senha)
-            && validarConfirmacaoSenha(this.user.senha, this.user.confirmar_senha)
-        );
-    },
-    async submitForm(e) {
-      e.preventDefault()
+    })
 
-        if (!this.validarFormulario()) {
+    const validarFormulario = () => {
+        return (
+            validarNome(user.nome) 
+            && validarEmail(user.email)
+            && validarSenha(user.senha)
+            && validarConfirmacaoSenha(user.senha, user.confirmar_senha)
+        );
+    }
+
+    const submitForm = async (event) => {
+        event.preventDefault()
+
+        if (!validarFormulario()) {
             return;
         }
 
-        this.state.estaSubmetendo = true
+        estaSubmetendo.value = true
   
             try {
             const corpoReqCadastro = new FormData();
-            corpoReqCadastro.append("nome", this.user.nome);
-            corpoReqCadastro.append("email", this.user.email);
-            corpoReqCadastro.append("senha", this.user.senha);
+            corpoReqCadastro.append("nome", user.nome);
+            corpoReqCadastro.append("email", user.email);
+            corpoReqCadastro.append("senha", user.senha);
 
             // if (imagem?.arquivo) {
             //     corpoReqCadastro.append("file", imagem.arquivo);
@@ -76,21 +60,29 @@ export default {
 
             await usuarioService.cadastro(corpoReqCadastro);
             await usuarioService.login({
-                login: this.user.email,
-                senha: this.user.senha
+                login: user.email,
+                senha: user.senha
             });
-            
-            this.$router.push({ path: "/" })
-            
+
+            estaSubmetendo.value = false
+
+            router.push({ path: "/" })          
         } catch (error) {
             alert(
                 "Erro ao cadastrar usuario. " + error?.response?.data?.erro
             );
         }
-
-        this.state.estaSubmetendo = false;
-    },
-  }
+    }
+      return {
+        user,
+        avatar,
+        envelope,
+        chave,
+        submitForm,
+        validarFormulario,
+        estaSubmetendo
+        }
+    }  
 }
 
 </script>
@@ -111,31 +103,31 @@ export default {
                         texto="Nome Completo"
                         tipo="text"
                         v-model="user.nome"
-                        :icone="user_icon"
+                        :icone="avatar"
                     />
                     <InputPublico
                         texto="E-mail"
                         tipo="email"
                         v-model="user.email"
-                        :icone="email_icon"
+                        :icone="envelope"
                     />
                     <InputPublico
                         texto="Senha"
                         tipo="password"
                         v-model="user.senha"
-                        :icone="password_icon"
+                        :icone="chave"
                     />
                     <InputPublico
                         texto="Confirmar Senha"
                         tipo="password"
                         v-model="user.confirmar_senha"
-                        :icone="password_icon"
+                        :icone="chave"
                     />
                     <Botao
                         texto="Cadastrar"
                         tipo="submit"
                         :desabilitado="!validarFormulario() || estaSubmetendo"
-                        v-on:click="submitForm"
+                        v-on:click="submitForm($event)"
                     />
                 </form>
                 <div className="rodapePaginaPublica">

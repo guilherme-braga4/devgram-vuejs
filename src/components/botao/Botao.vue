@@ -1,33 +1,32 @@
 <script>
+import {computed} from 'vue'
+
   export default {
     props: {
        type: {
         default: 'button',
-        type: String
         },
-      texto: {
-        default: '',
-        type: String
-        },
+      texto: '',
       cor: {
         default: 'primaria',
-        type: String
       },
       desabilitado: {
         default: false,
-        type: Boolean
       },
-      manipularClique: {
-
+      manipularClique: '',
       },
-
-    }
+      setup (props) {
+        const classButton = computed(() => `btn ${props.cor}`)
+          return {
+            classButton
+          }
+      }
   }
 </script>
 
 <template>
   <button 
-  className="btn primaria"
+  :class="classButton"
   :v-on:click="manipularClique"
   :disabled="desabilitado"
   :type="type">

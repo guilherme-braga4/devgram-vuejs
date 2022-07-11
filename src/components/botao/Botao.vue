@@ -16,6 +16,7 @@ import {computed} from 'vue'
       manipularClique: '',
       },
       setup (props) {
+        console.log("props button", props)
         const classButton = computed(() => `btn ${props.cor}`)
           return {
             classButton
@@ -27,7 +28,7 @@ import {computed} from 'vue'
 <template>
   <button 
   :class="classButton"
-  :v-on:click="manipularClique"
+  v-on:click="manipularClique"
   :disabled="desabilitado"
   :type="type">
      {{texto}}

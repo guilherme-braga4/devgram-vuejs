@@ -6,7 +6,6 @@ export default {
   props: {
     aoSetarAReferencia: '',
     className: '',
-    imagem: '',
     imagemPreview: '',
     imagemPreviewClassName: '',
   },

@@ -57,9 +57,8 @@ export default {
 
     const manipularCliqueBotaoPrincipal = async () => {
         if (props.estaNoPerfilPessoal) {
-            return router.push('/perfil/editar');
+            return router.push('/perfil/editar')
         }
-
         try {
             await usuarioService.alternarSeguir(props.usuario._id);
             setQuantidadeSeguidores(

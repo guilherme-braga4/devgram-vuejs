@@ -28,7 +28,7 @@ export default {
     const teste = inject('usuarioLogado')
     console.log("teste Injected", teste)
 
-    watchEffect(() => console.log("imagem", imagem.value.arquivo))
+    watchEffect(() => console.log("imagem", imagem.value))
 
     const estaNaEtapaUm = () => etapaAtual.value === 1;
 
@@ -98,8 +98,10 @@ export default {
             }
 
             const corpoPublicacao = new FormData();
-            corpoPublicacao.append('descricao', descricao);
-            corpoPublicacao.append('file', imagem.arquivo);
+            corpoPublicacao.append('descricao', descricao.value);
+            corpoPublicacao.append('file', imagem.value.arquivo);
+
+            console.log("corpoRequisicao", corpoPublicacao)
 
             await feedService.fazerPublicacao(corpoPublicacao);
             router.push('/');
@@ -149,7 +151,6 @@ export default {
             <div className="conteudoPaginaPublicacao">
                         <div className="primeiraEtapa" v-if="estaNaEtapaUm()">
                             <UploadImagem
-                                :imagem="imagem"
                                 :aoSetarAReferencia="inputImagem"
                                 :imagemPreviewClassName="!imagem ? 'previewImagemPublicacao' : 'previewImagemSelecionada'"
                                 :imagemPreview="imagem?.preview || imagemPublicacao"
@@ -157,14 +158,13 @@ export default {
                             />
                             <span className="desktop textoDragAndDrop">Arraste sua foto aqui!</span>
                             <Botao
-                                texto='Selecionar umaimagem'
+                                texto='Selecionar uma imagem'
                                 :manipularClique="() => inputImagem?.click()"
                             />
                         </div>
 
                             <div className="segundaEtapa" v-else>
                                 <UploadImagem
-                                    :imagem="imagem"
                                     :imagemPreview="imagem?.preview"
                                     v-model="imagem"
                                 />

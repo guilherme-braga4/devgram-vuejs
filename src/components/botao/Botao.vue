@@ -16,7 +16,6 @@ import {computed} from 'vue'
       manipularClique: '',
       },
       setup (props) {
-        console.log("props button", props)
         const classButton = computed(() => `btn ${props.cor}`)
           return {
             classButton

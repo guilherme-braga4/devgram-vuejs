@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TelaCadastro from '../views/Cadastro/TelaCadastro.vue'
+import TelaPerfil from '../views/Perfil/TelaPerfil.vue'
 import TelaPublicacao from '../views/Publicacao/TelaPublicacao.vue'
 import Home from '../components/home/Home.vue'
 
@@ -20,6 +21,11 @@ const router = createRouter({
       path: '/publicacao',
       name: 'TelaPublicacao',
       component: TelaPublicacao
+    },
+    {
+      path: '/perfil/:id',
+      name: 'TelaPerfil',
+      component: TelaPerfil
     },
     // {
     //   path: '/cadastro',

@@ -10,9 +10,13 @@ export default {
         aoClicarAcaoEsquerda: '',
         titulo: '',
         elementoDireita: '',
-        aoClicarElementoDireita: ''
+        aoClicarElementoDireita: '',
+        elementoDireitaPerfil: '',
+        imgLogout: '',
+        logout: '',
     },
     setup (props) {
+     console.log("props CabecalhoComAcoes", props)
      const classCabecalho = computed(() => `cabecalhoComAcoes ${props.class}`)
 
         return {
@@ -51,6 +55,14 @@ export default {
                 >
                     {{elementoDireita}}
                 </button>
+                <img
+                    v-if="elementoDireitaPerfil"
+                     :src="imgLogout"
+                     alt='icone logout'
+                     v-on:click="logout"
+                     :width="25"
+                     :height="50"
+                 />
         </div>
 </template>
 

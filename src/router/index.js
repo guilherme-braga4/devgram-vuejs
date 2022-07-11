@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TelaCadastro from '../views/Cadastro/TelaCadastro.vue'
 import TelaPerfil from '../views/Perfil/TelaPerfil.vue'
+import TelaEditarPerfil from '../views/Perfil/TelaEditarPerfil.vue'
 import TelaPublicacao from '../views/Publicacao/TelaPublicacao.vue'
 import Home from '../components/home/Home.vue'
 
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/perfil/:id',
       name: 'TelaPerfil',
       component: TelaPerfil
+    },
+    {
+      path: '/perfil/editar',
+      name: 'TelaEditarPerfil',
+      component: TelaEditarPerfil
     },
     // {
     //   path: '/cadastro',

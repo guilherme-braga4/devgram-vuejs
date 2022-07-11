@@ -1,9 +1,10 @@
 <template>
   <header className="container-root">
-    <!-- <cabecalho v-if="token"/> -->
+    <Cabecalho v-if="token"/>
       <RouterView v-if="token" @token="setToken"></RouterView>
       <!-- <home v-if="token" @token="setToken"/> -->
-      <login v-else="token" @token="setToken"/>
+      <Login v-else="token" @token="setToken"/>
+      <Rodape v-if="token"/>
   </header>
 </template>
 
@@ -12,15 +13,17 @@
 import Login from './components/login/Login.vue'
 import Home from './components/home/Home.vue'
 import Cabecalho from './components/layout/Cabecalho.vue'
+import Rodape from './components/layout/Rodape.vue'
 import router from './router/index'
 import UsuarioService from './services/UsuarioService'
 import { provide } from 'vue'
 
 export default {
   components: {
-    login : Login,
-    home: Home,
-    cabecalho: Cabecalho,
+    Login,
+    Home,
+    Cabecalho,
+    Rodape
   },
   setup () {
     const usuarioService = new UsuarioService();

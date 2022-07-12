@@ -28,7 +28,6 @@
 
     const usuarioLogado = inject('usuarioLogado')
     const itensDaPostagem = ref([])
-    const idPostagem = ref('')
     const listaDeCurtidasPostagem = ref([''])
     const listaDeComentariosDasPostagens = ref([])
     const deveExibirSecaoParaComentar = ref(false)
@@ -37,7 +36,7 @@
 
     itensDaPostagem.value = props.postagens
     listaDeCurtidasPostagem.value = props.postagens.curtidas //(estado para gerenciar as curtidas)
-    listaDeComentariosDasPostagens.value = props.postagens.comentarios //(estado para armazenar os arrays de comentários para iterar no template)
+    listaDeComentariosDasPostagens.value = props.postagens.comentarios //(estado para armazenar os arrays de comentários para iterar no html)
 
     const imagens = {
         imagemCurtir: imgCurtir,
@@ -110,7 +109,6 @@
         return {
             itensDaPostagem, 
             listaDeComentariosDasPostagens,
-            idPostagem,
             listaDeCurtidasPostagem,
             imagens,
             deveExibirSecaoParaComentar,
@@ -132,15 +130,13 @@
 </script>
 
 <template>
-<div className="postagem">
-            <!-- <Link href={`/perfil/${usuarioLogado.id}`}> -->
-                <!-- <router-link path=""> -->
-                <section className="cabecalhoPostagem">
-                    <Avatar :imageProps="itensDaPostagem.usuario.avatar" alt="perfil image"/>
-                    <strong>{{itensDaPostagem.usuario.nome}}</strong>
-                </section>
-                <!-- </router-link> -->
-            <!-- </Link> -->
+        <div className="postagem">
+                <router-link :to="'/perfil/' + itensDaPostagem.usuario.id">
+                    <section className="cabecalhoPostagem">
+                        <Avatar :imageProps="itensDaPostagem.usuario.avatar" alt="perfil image"/>
+                        <strong>{{itensDaPostagem.usuario.nome}}</strong>
+                    </section>
+                </router-link>
 
             <div className="fotoDaPostagem" >
                 <img :src="itensDaPostagem.fotoDoPost" alt='foto da postagem' />

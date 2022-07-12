@@ -25,7 +25,7 @@ import avatarImg from '../../public/imagens/avatar.svg';
 <template>
     <img
       :src="escolherAvatar()"
-      alt='foto da postagem'
+      alt='foto de avatar'
       className='avatar'
     />
     

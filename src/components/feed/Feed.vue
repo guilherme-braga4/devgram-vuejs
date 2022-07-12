@@ -24,11 +24,11 @@
     watchEffect(async () => {
       const { data } = await feedService.carregarPostagens(props.usuarioPerfilAtual?._id);
       const postagensFormatadas = data.map((postagem) => (
-            // console.log("postagem", postagem),
+            console.log("postagem", postagem),
             {
                 id: postagem._id,
                 usuario: {
-                    id: postagem.userId || props.usuarioPerfilAtual?._id,
+                    id: postagem.idUsuario || props.usuarioPerfilAtual?._id,
                     nome: postagem?.usuario?.nome || props.usuarioPerfilAtual?.nome,
                     avatar: postagem?.usuario?.avatar || props.usuarioPerfilAtual?.avatar
                 }, 

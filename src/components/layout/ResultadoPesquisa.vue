@@ -10,18 +10,13 @@ export default {
         onClick: '',
         id: ''
     },
-    setup(props) {
-        // const a = computed(() => {})
-        return {
-            Avatar
-        }
-    }
+    components: { Avatar }
 }
 </script>
 
 <template>
         <div className="resultadoPesquisa" v-on:click="onClick(id)">
-            <img :src="Avatar"/>
+            <Avatar :src="avatar"/>
             <div className='informacoesUsuario'>
                 <strong>{{nome}}</strong>
                 <span>{{email}}</span>

@@ -44,6 +44,7 @@ export default {
         }
 
         const aoClicarResultadoPesquisa = (id) => {
+            console.log('aoClicarResultadoPesquisa ID', id)
             resultadoPesquisa.value = [];
             termoPesquisado.value = '';
             router.push(`/perfil/${id}`);
@@ -100,15 +101,15 @@ export default {
             </div>
 
                 <div className='resultadoPesquisaContainer' v-if="resultadoPesquisa.length > 0">
-                        <!-- <ResultadoPesquisa
-                            v-for="caracter in resultadoPesquisa"
-                            avatar={r.avatar}
-                            nome={r.nome}
-                            email={r.email}
-                            key={r._id}
-                            id={r._id}
-                            onClick={aoClicarResultadoPesquisa}
-                        /> -->
+                        <ResultadoPesquisa
+                            v-for="c in resultadoPesquisa"
+                            :avatar="c.avatar"
+                            :nome="c.nome"
+                            :email="c.email"
+                            :key="c._id"
+                            :id="c._id"
+                            :onClick="aoClicarResultadoPesquisa"
+                        />
                 </div>
         </header>
 </template>

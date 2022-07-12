@@ -24,7 +24,7 @@
         Avatar,
     },
     setup (props) {
-    // console.log("props Postagem", props.postagens)
+    console.log("props Postagem", props.postagens)
 
     const usuarioLogado = inject('usuarioLogado')
     const itensDaPostagem = ref([])

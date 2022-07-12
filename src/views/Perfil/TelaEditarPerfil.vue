@@ -28,6 +28,7 @@ const usuarioService = new UsuarioService();
             return;
         }
 
+        console.log("usuarioLogado", usuarioLogado)
         console.log("novoAvatar.value", novoAvatar.value)
 
         nome.value = usuarioLogado.nome
@@ -45,8 +46,8 @@ const usuarioService = new UsuarioService();
             const corpoRequisicao = new FormData();
             corpoRequisicao.append('nome', nome.value);
 
-            if (novoAvatar.value.preview) {
-                corpoRequisicao.append('file', novoAvatar.value.preview);
+            if (novoAvatar.value.arquivo) {
+                corpoRequisicao.append('file', novoAvatar.value.arquivo);
             }
 
             console.log("corpoRequisicao", corpoRequisicao)

@@ -93,7 +93,7 @@
 
      const comentar = async (comentario) => {
         try {
-            await feedService.adicionarComentario(idPostagem.value, comentario);
+            await feedService.adicionarComentario(itensDaPostagem.value.id, comentario);
             deveExibirSecaoParaComentar.value = false;
         } catch (e) {
             alert(`Erro ao fazer comentario! ` + (e?.response?.data?.erro || ''));

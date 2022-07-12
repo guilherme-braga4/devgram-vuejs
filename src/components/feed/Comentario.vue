@@ -1,7 +1,6 @@
 <script>
   import Avatar from '../avatar/Avatar.vue'
-  import { useStore } from 'vuex';
-  import { reactive, onMounted, ref, watchEffect } from 'vue'
+  import { ref, inject } from 'vue'
 
 
   import FeedService from "../../services/FeedService";
@@ -20,6 +19,7 @@
     setup(props, context) {
       const comentario = ref("")
       const linhas = ref(1)
+      const usuarioLogado = inject('usuarioLogado')
 
       const aoDigitarComentario = (event) => {
             comentario.value = event.target.value
@@ -42,6 +42,7 @@
 
 
       return {
+        usuarioLogado,
         comentario,
         linhas,
         aoDigitarComentario,
@@ -54,7 +55,7 @@
 
 <template>
     <div className="containerFazerComentario">
-            <Avatar alt="perfil image"/>
+            <Avatar alt="perfil image" :imageProps="usuarioLogado.avatar"/>
             <textarea
                 placeholder="Adicione um comentario..."
                 @input="aoDigitarComentario"

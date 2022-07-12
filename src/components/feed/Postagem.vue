@@ -24,11 +24,10 @@
         Avatar,
     },
     setup (props) {
+    // console.log("props Postagem", props.postagens)
+
     const usuarioLogado = inject('usuarioLogado')
-    console.log(usuarioLogado)
-    
-    //carrega a Lista de Postagens
-    const listaDePostagens = ref([])
+    const itensDaPostagem = ref([])
     const idPostagem = ref('')
     const listaDeCurtidasPostagem = ref([''])
     const listaDeComentariosDasPostagens = ref([])
@@ -36,7 +35,9 @@
     const tamanhoAtualDaDescricao = ref(90)
     const receberComentario = ref('')
 
-    console.log("receberComentario", receberComentario)
+    itensDaPostagem.value = props.postagens
+    listaDeCurtidasPostagem.value = props.postagens.curtidas //(estado para gerenciar as curtidas)
+    listaDeComentariosDasPostagens.value = props.postagens.comentarios //(estado para armazenar os arrays de comentários para iterar no template)
 
     const imagens = {
         imagemCurtir: imgCurtir,
@@ -44,33 +45,51 @@
         imagemComentarioAtivo: imgComentarioAtivo,
         imagemComentarioCinza: imgComentarioCinza
     }
-        
-    //---->>> esperar a API fazer o fetch (no Componente Pai), para então receber as props corretamente
-     watchEffect(() => {{
-        listaDePostagens.value = props.postagens.listaDePostagens
-        listaDeCurtidasPostagem.value = props.postagens.listaDePostagens.map((i) => i.curtidas)
-        listaDeComentariosDasPostagens.value = props.postagens.listaDePostagens.map((i) => i.comentarios)
-        idPostagem.value = listaDePostagens.value.map((i) => i.id)
-     }}, [props.postagens])
-     //---->>>
+
+    const exibirSecaoParaComentar = () => {
+        return deveExibirSecaoParaComentar.value = !deveExibirSecaoParaComentar.value
+    }
+
+    const exibirDescricaoCompleta = () => tamanhoAtualDaDescricao.value = Number.MAX_SAFE_INTEGER
+
+    const descricaoMaiorQueLimite = () => {
+        return itensDaPostagem.value.descricao.length > tamanhoAtualDaDescricao.value
+    }
+    console.log("descricaoMaiorQueLimite", descricaoMaiorQueLimite())
+
+    const obterDescricao = () => {
+        let mensagem = itensDaPostagem.value.descricao.substring(0, tamanhoAtualDaDescricao.value);
+            if (descricaoMaiorQueLimite()) {
+                mensagem += '...';
+            }
+            return mensagem;
+    }
+
 
      const alterarCurtida = async () => {
         try {
-            await feedService.alterarCurtida(idPostagem.value);
+            await feedService.alterarCurtida(itensDaPostagem.value.id);
             if (usuarioLogadoCurtiuPostagem()) {
                 // tiro o usuario logado da lista de curtidas
-                console.log("alterarCurtida if")
                 listaDeCurtidasPostagem.value = listaDeCurtidasPostagem.value.filter(idUsuarioQueCurtiu => idUsuarioQueCurtiu !== usuarioLogado.id)
             }
             else { 
-                console.log("alterarCurtida else")
-                console.log(listaDeCurtidasPostagem.value)
+                // insiro o usuario logado da lista de curtidas
                 listaDeCurtidasPostagem.value.push(usuarioLogado.id)
             }
         } catch (e) {
             alert(`Erro ao alterar a curtida! ` + (e?.response?.data?.erro || ''));
         }
     }
+
+    const usuarioLogadoCurtiuPostagem = () => listaDeCurtidasPostagem.value.includes(usuarioLogado.id)
+
+     const obterImagemCurtida = () => {
+        return usuarioLogadoCurtiuPostagem()
+            ? imagens.imagemCurtido
+            : imagens.imagemCurtir;
+    }
+
 
      const comentar = async (comentario) => {
         try {
@@ -81,38 +100,15 @@
         }
     }
 
-    const usuarioLogadoCurtiuPostagem = () => listaDeCurtidasPostagem.value.includes(usuarioLogado.id)
-
-    const obterImagemCurtida = () => {
-        return usuarioLogadoCurtiuPostagem()
-            ? imagens.imagemCurtido
-            : imagens.imagemCurtir;
-    }
-
     const obterImagemComentario = () => {
         return deveExibirSecaoParaComentar.value
             ? imagens.imagemComentarioAtivo
             : imagens.imagemComentarioCinza;
     }
 
-    const exibirSecaoParaComentar = () => {
-        return deveExibirSecaoParaComentar.value = !deveExibirSecaoParaComentar.value
-    }
-
-    const exibirDescricaoCompleta = computed(() => tamanhoAtualDaDescricao(Number.MAX_SAFE_INTEGER))
-
-    const descricaoMaiorQueLimite = computed(() => listaDePostagens.descricao.length > tamanhoAtualDaDescricao)
-
-    const obterDescricao = computed(() => {
-        let mensagem = listaDePostagens.descricao.substring(0, tamanhoAtualDaDescricao);
-            if (descricaoMaiorQueLimite()) {
-                mensagem += '...';
-            }
-            return mensagem;
-    })
 
         return {
-            listaDePostagens, 
+            itensDaPostagem, 
             listaDeComentariosDasPostagens,
             idPostagem,
             listaDeCurtidasPostagem,
@@ -128,6 +124,7 @@
             obterImagemCurtida,
             obterImagemComentario,
             exibirSecaoParaComentar,
+            descricaoMaiorQueLimite,
             usuarioLogado
         }
     },
@@ -135,18 +132,18 @@
 </script>
 
 <template>
-<div className="postagem" v-for="item in listaDePostagens">
+<div className="postagem">
             <!-- <Link href={`/perfil/${usuarioLogado.id}`}> -->
                 <!-- <router-link path=""> -->
                 <section className="cabecalhoPostagem">
-                    <Avatar :imageProps="usuarioLogado.avatar" alt="perfil image"/>
-                    <strong>{{usuarioLogado.nome}}</strong>
+                    <Avatar :imageProps="itensDaPostagem.usuario.avatar" alt="perfil image"/>
+                    <strong>{{itensDaPostagem.usuario.nome}}</strong>
                 </section>
                 <!-- </router-link> -->
             <!-- </Link> -->
 
             <div className="fotoDaPostagem" >
-                <img :src="item.fotoDoPost" alt='foto da postagem' />
+                <img :src="itensDaPostagem.fotoDoPost" alt='foto da postagem' />
             </div>
 
             <div className="rodapeDaPostagem">
@@ -164,26 +161,25 @@
                             v-on:click="exibirSecaoParaComentar()"
                         />
                     <span className="quantidadeCurtidas">
-                        Curtido por <strong> {{item.curtidas.length}} pessoas</strong>
+                        Curtido por <strong> {{listaDeCurtidasPostagem.length}} pessoas</strong>
                     </span>
                 </div>
     
                 <div className="descricaoDaPostagem">
-                    <strong className="nomeUsuario">{{usuarioLogado.nome}}</strong>
+                    <strong className="nomeUsuario">{{itensDaPostagem.nome}}</strong>
                     <p className="descricao">
-
-
-                            <span
-                                onClick={exibirDescricaoCompleta}
-                                className="exibirDescricaoCompleta">
-                                mais
-                            </span>
- 
+                        {{obterDescricao()}}
+                        <span
+                            v-if="descricaoMaiorQueLimite()"
+                            v-on:click="exibirDescricaoCompleta"
+                            className="exibirDescricaoCompleta">
+                            mais
+                        </span>
                     </p>
                 </div>
 
                 <div className="comentariosDaPublicacao">
-                        <div className="comentario" v-for="(comentario, index) in listaDeComentariosDasPostagens[0]" :key="index">
+                        <div className="comentario" v-for="(comentario, index) in listaDeComentariosDasPostagens" :key="index">
                             <strong className="nomeUsuario">{{comentario.nome}}</strong>
                             <p className="descricao">{{comentario.mensagem}}</p>
                         </div>

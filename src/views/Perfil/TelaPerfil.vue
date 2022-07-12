@@ -44,8 +44,8 @@ export default {
             return;
         }
         const dadosPerfil = await obterPerfil(router.currentRoute.value.params.id);
-        usuario.value = dadosPerfil //>>> Dados do Usuário (Diferente de Usuário Logado)
-        // console.log("usuario.value", usuario.value)
+        usuario.value = dadosPerfil //-->> Dados do Usuário (Diferente de Usuário Logado, é o perfil Atual que está sendoe exibido)
+        console.log("usuario.value", usuario.value)
     }, [router.currentRoute.value.params.id]);
 
         return {
@@ -65,8 +65,7 @@ export default {
             />
 
             <Feed
-                :usuarioLogado="usuarioLogado"
-                :usuarioPerfil="usuario"
+                :usuarioPerfilAtual="usuario"
             />
         </div>
 </template>

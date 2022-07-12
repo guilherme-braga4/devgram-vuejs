@@ -45,8 +45,8 @@ const usuarioService = new UsuarioService();
             const corpoRequisicao = new FormData();
             corpoRequisicao.append('nome', nome.value);
 
-            if (novoAvatar.value.arquivo) {
-                corpoRequisicao.append('file', novoAvatar.value.arquivo);
+            if (novoAvatar.value.preview) {
+                corpoRequisicao.append('file', novoAvatar.value.preview);
             }
 
             console.log("corpoRequisicao", corpoRequisicao)

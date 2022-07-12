@@ -1,23 +1,22 @@
 <script>
 import avatarImg from '../../public/imagens/avatar.svg';
-import imgCurtir from '../../public/imagens/curtir.svg';
 
   export default {
     name: 'Avatar',
     props: {
       imageProps: ''
     },
-    data(){
-      return {
-        useAvatarImg: avatarImg
+    setup(props) {
+      console.log("props Avatar", props)
+
+      const escolherAvatar = () => {
+        // if (props.imageProps && props.imageProps !== undefined) {
+          return props.imageProps
+        // }
+        // return avatarImg
       }
-    },
-    methods: {
-      escolherAvatar() {
-        if (this.imageProps && this.imageProps !== undefined) {
-          return this.imageProps
-        }
-        return this.useAvatarImg
+      return {
+        escolherAvatar
       }
     }
   }    

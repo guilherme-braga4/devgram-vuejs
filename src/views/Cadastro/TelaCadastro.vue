@@ -1,5 +1,5 @@
 <script>
-import { onMounted, computed, reactive, ref } from "vue";
+import { reactive, ref, watchEffect } from "vue";
 import InputPublico from '../../components/inputPublico/InputPublico.vue'
 import Botao from '../../components/botao/Botao.vue'
 import UploadImagem from '../../components/uploadImagem/UploadImagem.vue'
@@ -7,6 +7,7 @@ import avatar from "../../public/imagens/avatar.svg";
 import envelope from "../../public/imagens/envelope.svg";
 import chave from "../../public/imagens/chave.svg";
 import router from '../../router/index'
+import imagemAvatar from "../../public/imagens/avatar.svg";
 
 import { validarEmail, validarSenha, validarNome, validarConfirmacaoSenha } from "../../utils/validadores";
 
@@ -29,6 +30,8 @@ export default {
             email: "",
             senha: "",
     })
+    const imagem = ref('')
+    watchEffect(() => {console.log("imagem", imagem.value)}, [imagem.value])
 
     const validarFormulario = () => {
         return (
@@ -54,9 +57,9 @@ export default {
             corpoReqCadastro.append("email", user.email);
             corpoReqCadastro.append("senha", user.senha);
 
-            // if (imagem?.arquivo) {
-            //     corpoReqCadastro.append("file", imagem.arquivo);
-            // }
+            if (imagem?.value?.arquivo) {
+                corpoReqCadastro.append("file", imagem.arquivo);
+            }
 
             await usuarioService.cadastro(corpoReqCadastro);
             await usuarioService.login({
@@ -76,8 +79,10 @@ export default {
       return {
         user,
         avatar,
+        imagem,
         envelope,
         chave,
+        imagemAvatar,
         submitForm,
         validarFormulario,
         estaSubmetendo
@@ -98,7 +103,11 @@ export default {
         </div>
         <div className="conteudoPaginaPublica">
                 <form>
-                    <UploadImagem/>
+                    <UploadImagem
+                        imagemPreviewClassName="avatar avatarPreview"
+                        :imagemPreview="imagem?.preview || imagemAvatar"
+                        v-model:imagemDoInput="imagem"
+                    />
                     <InputPublico
                         texto="Nome Completo"
                         tipo="text"

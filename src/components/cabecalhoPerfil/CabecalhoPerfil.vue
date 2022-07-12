@@ -40,7 +40,7 @@ export default {
             return 'Editar perfil';
         }
 
-        if (estaSeguindoOUsuario) {
+        if (estaSeguindoOUsuario.value) {
             return 'Deixar de seguir';
         }
 
@@ -48,7 +48,7 @@ export default {
     }
 
     const obterCorDoBotaoPrincipal = () => {
-        if (estaSeguindoOUsuario || props.estaNoPerfilPessoal) {
+        if (estaSeguindoOUsuario.value || props.estaNoPerfilPessoal) {
             return 'invertido';
         }
 
@@ -61,12 +61,12 @@ export default {
         }
         try {
             await usuarioService.alternarSeguir(props.usuario._id);
-            setQuantidadeSeguidores(
-                estaSeguindoOUsuario
-                    ? (quantidadeSeguidores - 1)
-                    : (quantidadeSeguidores + 1)
-            );
-            setEstaSeguindoOUsuario(!estaSeguindoOUsuario);
+            quantidadeSeguidores.value = 
+                estaSeguindoOUsuario.value
+                ? (quantidadeSeguidores.value - 1)
+                : (quantidadeSeguidores.value + 1)
+                
+            estaSeguindoOUsuario.value = !estaSeguindoOUsuario;
         } catch (error) {
             alert(`Erro ao seguir/deixar de seguir!`);
         }

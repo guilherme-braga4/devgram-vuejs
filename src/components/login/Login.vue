@@ -6,8 +6,7 @@ import UploadImagem from '../../components/uploadImagem/UploadImagem.vue'
 import envelope from "../../public/imagens/envelope.svg";
 import chave from "../../public/imagens/chave.svg";
 import { validarEmail, validarSenha } from "../../utils/validadores";
-// import imagemUsuarioAtivo from "../../public/imagens/usuarioAtivo.svg";
-
+import router from '../../router/index'
 import UsuarioService from "../../services/UsuarioService";
 
 const usuarioService = new UsuarioService();
@@ -49,6 +48,7 @@ export default {
                 login: user.email,
                 senha: user.senha
             });
+        router.push('/')
         } catch (error) {
             alert(
                 "Erro ao realizar o login. " + error?.response?.data?.erro

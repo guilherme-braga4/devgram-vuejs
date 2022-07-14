@@ -3,6 +3,7 @@ export default {
     name: "InputPublico",
     props: {
         modelValue: '',
+        tipo: '',
         icone: {
             default: '',
             type: String
@@ -26,7 +27,7 @@ export default {
                     width="20"
                     height="20"
                 />
-                <input type="text" :value="modelValue" @input="updateValue"/>
+                <input :type="tipo" :value="modelValue" @input="updateValue"/>
             </div>  
         </div>
 </template>

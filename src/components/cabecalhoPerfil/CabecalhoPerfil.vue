@@ -61,12 +61,8 @@ export default {
         }
         try {
             await usuarioService.alternarSeguir(props.usuario._id);
-            quantidadeSeguidores.value = 
-                estaSeguindoOUsuario.value
-                ? (quantidadeSeguidores.value - 1)
-                : (quantidadeSeguidores.value + 1)
-                
-            estaSeguindoOUsuario.value = !estaSeguindoOUsuario;
+            estaSeguindoOUsuario.value = !estaSeguindoOUsuario.value;
+            quantidadeSeguidores.value = estaSeguindoOUsuario.value ? (quantidadeSeguidores.value + 1): (quantidadeSeguidores.value - 1)
         } catch (error) {
             alert(`Erro ao seguir/deixar de seguir!`);
         }
@@ -97,7 +93,8 @@ export default {
             logout,
             obterElementoDireitaCabecalho,
             imgSetaEsquerda,
-            imgLogout
+            imgLogout,
+            quantidadeSeguidores
             
         }
     }
@@ -127,7 +124,7 @@ export default {
                         </div>
 
                         <div className='status'>
-                            <strong>{{usuario.seguidores}}</strong>
+                            <strong>{{quantidadeSeguidores}}</strong>
                             <span>Seguidores</span>
                         </div>
 

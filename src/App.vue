@@ -1,10 +1,9 @@
 <template>
   <header className="container-root">
-    <Cabecalho v-if="token"/>
-      <RouterView v-if="token" @token="setToken"></RouterView>
-      <!-- <home v-if="token" @token="setToken"/> -->
-      <Login v-else="token" @token="setToken"/>
-      <Rodape v-if="token"/>
+    <Cabecalho v-if="token" @token="setToken"/>
+      <RouterView></RouterView>
+    <Rodape v-if="token"/>
+    <Login v-else="token" @token="setToken"/>
   </header>
 </template>
 

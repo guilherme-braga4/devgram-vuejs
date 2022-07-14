@@ -4,6 +4,9 @@ import TelaPerfil from '../views/Perfil/TelaPerfil.vue'
 import TelaEditarPerfil from '../views/Perfil/TelaEditarPerfil.vue'
 import TelaPublicacao from '../views/Publicacao/TelaPublicacao.vue'
 import Home from '../components/home/Home.vue'
+import UsuarioService from '../services/UsuarioService'
+
+const usuarioService = new UsuarioService()
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,34 +14,43 @@ const router = createRouter({
     {
       path: '/cadastro',
       name: 'TelaCadastro',
-      component: TelaCadastro
+      component: TelaCadastro,
     },
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Home,
+      meta: { estaAutenticado: true }
     },
     {
       path: '/publicacao',
       name: 'TelaPublicacao',
-      component: TelaPublicacao
+      component: TelaPublicacao,
+      meta: { estaAutenticado: true }
     },
     {
       path: '/perfil/:id',
       name: 'TelaPerfil',
-      component: TelaPerfil
+      component: TelaPerfil,
+      meta: { estaAutenticado: true }
     },
     {
       path: '/perfil/editar',
       name: 'TelaEditarPerfil',
-      component: TelaEditarPerfil
+      component: TelaEditarPerfil,
+      meta: { estaAutenticado: true }
     },
-    // {
-    //   path: '/cadastro',
-    //   name: 'TelaCadastro',
-    //   component: TelaCadastro
-    // },
   ]
+})
+
+router.beforeEach((to, from) => {
+  //se a rota necessita de autenticação, e o usuário não está logado, irá redirecionar para o /login
+  if (to.meta.estaAutenticado && !usuarioService.estaAutenticado()) {
+    return {
+      path: '/login',
+      // query: { redirect: to.fullPath },
+    }
+  }
 })
 
 export default router

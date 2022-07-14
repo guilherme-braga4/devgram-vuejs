@@ -47,7 +47,7 @@ router.beforeEach((to, from) => {
   //se a rota necessita de autenticação, e o usuário não está logado, irá redirecionar para o /login
   if (to.meta.estaAutenticado && !usuarioService.estaAutenticado()) {
     return {
-      path: '/login',
+      path: '/',
       // query: { redirect: to.fullPath },
     }
   }

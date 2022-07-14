@@ -2,9 +2,7 @@ import DevagramApiService from "./DevagramApiService";
 
 export default class UsuarioService extends DevagramApiService {
     async login(credenciais) {
-        console.log("dentro do login")
         const { data } = await this.post('/login', credenciais);
-        console.log("data login", data)
 
         localStorage.setItem("nome", data.nome);
         localStorage.setItem("email", data.email);
@@ -16,6 +14,7 @@ export default class UsuarioService extends DevagramApiService {
         if (usuario.data.avatar) {
             localStorage.setItem("avatar", usuario.data.avatar);
         }
+        window.location.reload(true)
     }
 
     async logout() {
@@ -24,10 +23,10 @@ export default class UsuarioService extends DevagramApiService {
         localStorage.removeItem("token");
         localStorage.removeItem("id");
         localStorage.removeItem("avatar");
+        window.location.reload(true)
     }
 
     async cadastro(dados) {
-        console.log("cadastro dados", dados)
         return this.post('/cadastro', dados);
     }
 

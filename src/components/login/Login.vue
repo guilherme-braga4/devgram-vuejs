@@ -12,7 +12,7 @@ import UsuarioService from "../../services/UsuarioService";
 const usuarioService = new UsuarioService();
 
 export default {
-  name: 'Cadastro',
+  name: 'Login',
   components: {
     InputPublico, 
     Botao, 

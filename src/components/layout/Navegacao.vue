@@ -34,10 +34,12 @@ export default {
 
     const rotaAtiva = ref('home')
 
-    // onBeforeMount(() => {})
+    console.log('window.location.pathname', window.location.pathname)
+    console.log('router', router)
+    console.log('Route...', router.currentRoute.value.name)
 
     const definirRotaAtiva = () => {
-        const chavesDoMapaDeRotas = Object.keys(mapaDeRotas);
+          const chavesDoMapaDeRotas = Object.keys(mapaDeRotas);
         const indiceAtivo = chavesDoMapaDeRotas.findIndex(chave => {
             return mapaDeRotas[chave].rotasAtivacao.includes(
                 window.location.pathname
@@ -52,9 +54,9 @@ export default {
     }
 
     watchEffect(() => {
-        definirRotaAtiva();
-    }, [router.asPath]);
-
+        console.log('Definindo Nova Rota...', router.currentRoute.value.name),
+      definirRotaAtiva()
+    }, [router.currentRoute.value.name]);
 
     const obterImagem = (nomeRota) => {
         const rotaAtivada = mapaDeRotas[nomeRota];
@@ -73,7 +75,6 @@ export default {
 
     const estilo = computed(() => {
         return `barraNavegacao ${props.className}`
-        // return "barraNavegacao"
     })
 
 

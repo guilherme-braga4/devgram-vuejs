@@ -66,7 +66,10 @@
                 display: flex;
                 align-items: center;
                 margin-bottom: 6px;
-                // background-color: rgb(255, 255, 203);
+
+                > img {
+                    margin: 0 5px 0 0;
+                }
 
                 > span {
                     margin-right: 5px !important;
@@ -80,6 +83,7 @@
                     strong {
                         font-size: 10px;
                         color: $cinza4;
+                        text-decoration: none;
                     }
                 }
             }

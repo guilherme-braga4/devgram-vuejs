@@ -24,7 +24,7 @@
         Avatar,
     },
     setup (props) {
-    console.log("props Postagem", props.postagens)
+    // console.log("props Postagem", props.postagens)
 
     const usuarioLogado = inject('usuarioLogado')
     const itensDaPostagem = ref([])
@@ -54,7 +54,7 @@
     const descricaoMaiorQueLimite = () => {
         return itensDaPostagem.value.descricao.length > tamanhoAtualDaDescricao.value
     }
-    console.log("descricaoMaiorQueLimite", descricaoMaiorQueLimite())
+    // console.log("descricaoMaiorQueLimite", descricaoMaiorQueLimite())
 
     const obterDescricao = () => {
         let mensagem = itensDaPostagem.value.descricao.substring(0, tamanhoAtualDaDescricao.value);
@@ -94,6 +94,8 @@
         try {
             await feedService.adicionarComentario(itensDaPostagem.value.id, comentario);
             deveExibirSecaoParaComentar.value = false;
+            listaDeComentariosDasPostagens.value.push({nome: usuarioLogado.nome, mensagem: comentario})
+            console.log('listaDeComentariosDasPostagens', listaDeComentariosDasPostagens.value)
         } catch (e) {
             alert(`Erro ao fazer comentario! ` + (e?.response?.data?.erro || ''));
         }

@@ -1,5 +1,5 @@
 <script>
-import {ref, watchEffect, computed} from 'vue'
+import {ref, watchEffect, computed, watch} from 'vue'
 import router from '../../router/index'
 import imgHomeAtivo from '../../public/imagens/homeAtivo.svg';
 import imgHomeCinza from '../../public/imagens/homeCinza.svg';
@@ -14,6 +14,9 @@ export default {
         className: ''
     },
     setup (props) {
+    const rotaAtiva = ref('home')
+    const contador = ref(0)
+        
     const mapaDeRotas = {
         home: {
             imagemAtivo: imgHomeAtivo,
@@ -32,31 +35,24 @@ export default {
         }
     }
 
-    const rotaAtiva = ref('home')
 
-    console.log('window.location.pathname', window.location.pathname)
-    console.log('router', router)
-    console.log('Route...', router.currentRoute.value.name)
-
-    const definirRotaAtiva = () => {
-          const chavesDoMapaDeRotas = Object.keys(mapaDeRotas);
+    //Definindo a Rota Ativa
+    //--
+    watch(() => {
+        /*Trigger -----> */ router.currentRoute.value.path
+        const chavesDoMapaDeRotas = Object.keys(mapaDeRotas);
         const indiceAtivo = chavesDoMapaDeRotas.findIndex(chave => {
             return mapaDeRotas[chave].rotasAtivacao.includes(
                 window.location.pathname
             );
         });
-
+        console.log('Indice Ativo...', indiceAtivo);
         if (indiceAtivo === -1) {
-            rotaAtiva.value = 'home'
+            rotaAtiva.value = 'home';
         } else {
-            rotaAtiva.value = chavesDoMapaDeRotas[indiceAtivo]
-        }
-    }
-
-    watchEffect(() => {
-        console.log('Definindo Nova Rota...', router.currentRoute.value.name),
-      definirRotaAtiva()
-    }, [router.currentRoute.value.name]);
+            rotaAtiva.value = chavesDoMapaDeRotas[indiceAtivo];
+        }       
+    });
 
     const obterImagem = (nomeRota) => {
         const rotaAtivada = mapaDeRotas[nomeRota];
@@ -69,7 +65,8 @@ export default {
     }
 
     const aoClicarNoIcone = (nomeRota) => {
-        rotaAtiva.value = nomeRota;
+        //Troca a rota Dinamicamente
+        rotaAtiva.value = nomeRota
         router.push(mapaDeRotas[nomeRota].rotasAtivacao[0])
     }
 
@@ -77,16 +74,12 @@ export default {
         return `barraNavegacao ${props.className}`
     })
 
-
     return {
         estilo,
         aoClicarNoIcone,
-        obterImagem,
-        imgHomeAtivo,
-        imgHomeCinza
+        obterImagem
     }
-    
-    }
+  }
 }
 </script>
 

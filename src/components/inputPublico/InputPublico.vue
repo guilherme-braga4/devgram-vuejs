@@ -9,9 +9,14 @@ export default {
             type: String
         }
     },
-    methods: {
-        updateValue(event) {
-            this.$emit('update:modelValue', event.target.value);
+    setup (props, context) {
+        const updateValue = (event) => {
+             console.log('evento....', event.target.value)
+             context.emit('update:modelValue', event.target.value);
+        }
+
+        return {
+            updateValue
         }
     }
 }

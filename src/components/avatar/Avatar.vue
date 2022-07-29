@@ -7,13 +7,13 @@ import avatarImg from '../../public/imagens/avatar.svg';
       imageProps: ''
     },
     setup(props) {
-      console.log("props Avatar", props)
+      // console.log("props Avatar", props)
 
       const escolherAvatar = () => {
-        // if (props.imageProps && props.imageProps !== undefined) {
+        if (props.imageProps && props.imageProps !== undefined) {
           return props.imageProps
-        // }
-        // return avatarImg
+        }
+        return avatarImg
       }
       return {
         escolherAvatar

@@ -22,7 +22,6 @@ export default {
         Avatar
     },
     setup (props) {
-    console.log("props CabecalhoPerfil", props)
     const estaSeguindoOUsuario = ref(false);
     const quantidadeSeguidores = ref(0);
 
@@ -106,7 +105,7 @@ export default {
             <CabecalhoComAcoes
                 :iconeEquerda="estaNoPerfilPessoal ? null : imgSetaEsquerda"
                 :aoClicarAcaoEsquerda="aoClicarSetaEsquerda"
-                :titulo="usuario.nome"
+                :titulo="usuario?.nome"
                 :elementoDireitaPerfil="obterElementoDireitaCabecalho()"
                 :imgLogout="imgLogout"
                 :logout="logout"

@@ -63,7 +63,6 @@ export default {
       :usuario="usuario"
       :estaNoPerfilPessoal="estaNoPerfilPessoal()"
     />
-
     <Feed :usuarioPerfilAtual="usuario" />
   </div>
 </template>

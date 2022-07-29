@@ -76,7 +76,6 @@ export default {
                     <img
                         :src="logoHorizontalImg"
                         alt='logo devagram'
-                        layout='fill'
                         v-on:click="redirecionarParaHome"
                     />
                 </div>

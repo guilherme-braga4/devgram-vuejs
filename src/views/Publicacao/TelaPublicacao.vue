@@ -1,5 +1,5 @@
 <script>
-import { ref, watchEffect, computed, inject  } from 'vue'
+import { ref, watchEffect, computed } from 'vue'
 import Botao from '../../components/botao/Botao.vue'
 import CabecalhoComAcoes from "../../components/cabecalhoComAcoes/CabecalhoComAcoes.vue";
 import UploadImagem from "../../components/uploadImagem/UploadImagem.vue"
@@ -25,10 +25,11 @@ export default {
     const inputImagem = ref('')
     const etapaAtual = ref(1)
 
-    const teste = inject('usuarioLogado')
-    console.log("teste Injected", teste)
+    console.log("inputImagem", inputImagem)
 
-    watchEffect(() => console.log("imagem", imagem.value))
+    watchEffect(() => {
+        console.log("inputImagem", inputImagem.value)
+        }, [inputImagem.value, imagem.value])
 
     const estaNaEtapaUm = () => etapaAtual.value === 1;
 
@@ -70,6 +71,10 @@ export default {
         }
 
         publicar();
+    }
+
+    const selecionarFoto = () => {
+        return console.log(inputImagem?.value, imagem.value)
     }
 
     const escreverDescricao = (e) => {
@@ -128,7 +133,9 @@ export default {
       obterTextoEsquerdaCabecalho,
       imagemPublicacao,
       imagemSetaEsquerda,
-      imagem
+      imagem,
+      inputImagem,
+      selecionarFoto
     }
   }
 }
@@ -137,6 +144,7 @@ export default {
 <template>
     <div className="paginaPublicacao largura30pctDesktop">
             <CabecalhoComAcoes
+                v-if="imagem?.preview"
                 :class="obterClassNameCabecalho"
                 :iconeEquerda="estaNaEtapaUm() ? null : imagemSetaEsquerda"
                 :textoEsquerda="obterTextoEsquerdaCabecalho()"
@@ -146,35 +154,35 @@ export default {
                 titulo='Nova publicação'
             />
 
-            <hr className='linhaDivisoria' />
 
             <div className="conteudoPaginaPublicacao">
                         <div className="primeiraEtapa" v-if="estaNaEtapaUm()">
                             <UploadImagem
-                                :aoSetarAReferencia="inputImagem"
                                 :imagemPreviewClassName="!imagem ? 'previewImagemPublicacao' : 'previewImagemSelecionada'"
                                 :imagemPreview="imagem?.preview || imagemPublicacao"
-                                v-model="imagem"
+                                v-model:imagemDoInput="imagem"
                             />
                             <span className="desktop textoDragAndDrop">Arraste sua foto aqui!</span>
                             <Botao
                                 texto='Selecionar uma imagem'
-                                :manipularClique="() => inputImagem?.click()"
+                                v-model:referenciaDoInput="inputImagem"
+                                :manipularClique="selecionarFoto"
                             />
                         </div>
 
-                            <div className="segundaEtapa" v-else>
-                                <UploadImagem
+                        <div className="segundaEtapa" v-else>
+                            <UploadImagem
                                     :imagemPreview="imagem?.preview"
                                     v-model="imagem"
                                 />
-                                <textarea
-                                    :rows="3"
-                                    :value="descricao"
-                                    placeholder='Escreva uma legenda...'
-                                    @input="escreverDescricao"
-                                ></textarea>
-                            </div>
+
+                            <textarea
+                                :rows="3"
+                                :value="descricao"
+                                placeholder='Escreva uma legenda...'
+                                @input="escreverDescricao"
+                            ></textarea>
+                        </div>
             </div>
         </div>
 </template>

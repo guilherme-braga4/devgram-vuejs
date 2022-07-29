@@ -7,7 +7,7 @@
     components: {
       InputPublico,
       Feed
-    },
+    }
   }
 </script>
 

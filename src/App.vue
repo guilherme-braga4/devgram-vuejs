@@ -30,15 +30,6 @@ export default {
     const token = ref()
     const usuarioLogado = ref()
 
-    console.log('App...........')
-    // onUnmounted(() => console.log('onUnmounted.....'))
-
-    // watchEffect(() => console.log('watchEffect.....'))
-
-    // onMounted(() => console.log('OnMounted.....'))
-
-    // onUpdated(() => console.log('onUpdated.....'))
-
     //Essa função recebe o Token via Props, e causa uma atualização no DOM via reatividade
     const setToken = props => {
       token.value = props

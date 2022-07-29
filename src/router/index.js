@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Login from '../components/login/Login.vue'
 import TelaCadastro from '../views/Cadastro/TelaCadastro.vue'
 import TelaPerfil from '../views/Perfil/TelaPerfil.vue'
 import TelaEditarPerfil from '../views/Perfil/TelaEditarPerfil.vue'
@@ -14,7 +15,7 @@ const router = createRouter({
     {
       path: '/cadastro',
       name: 'TelaCadastro',
-      component: TelaCadastro,
+      component: TelaCadastro
     },
     {
       path: '/',
@@ -39,7 +40,7 @@ const router = createRouter({
       name: 'TelaEditarPerfil',
       component: TelaEditarPerfil,
       meta: { estaAutenticado: true }
-    },
+    }
   ]
 })
 
@@ -47,8 +48,8 @@ router.beforeEach((to, from) => {
   //se a rota necessita de autenticação, e o usuário não está logado, irá redirecionar para o /login
   if (to.meta.estaAutenticado && !usuarioService.estaAutenticado()) {
     return {
-      path: '/',
-      // query: { redirect: to.fullPath },
+      path: '*',
+      component: Login
     }
   }
 })

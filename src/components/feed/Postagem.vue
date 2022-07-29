@@ -1,10 +1,7 @@
 <script>
   import Comentario from './Comentario.vue'
   import Avatar from '../avatar/Avatar.vue'
-  import { useStore } from 'vuex';
   import { reactive, onMounted, ref, watchEffect, inject, computed } from 'vue'
-
-
   import imgCurtir from '../../public/imagens/curtir.svg';
   import imgCurtido from '../../public/imagens/curtido.svg';
   import imgComentarioAtivo from '../../public/imagens/comentarioAtivo.svg';
@@ -24,8 +21,6 @@
         Avatar,
     },
     setup (props) {
-    // console.log("props Postagem", props.postagens)
-
     const usuarioLogado = inject('usuarioLogado')
     const itensDaPostagem = ref([])
     const listaDeCurtidasPostagem = ref([''])
@@ -34,7 +29,9 @@
     const tamanhoAtualDaDescricao = ref(90)
     const receberComentario = ref('')
 
-    itensDaPostagem.value = props.postagens
+    //Atualizando os Conteúdos das Postagens, após o Update(LifeCyle) do Feed (Componente)
+    watchEffect(() => itensDaPostagem.value = props.postagens)
+
     listaDeCurtidasPostagem.value = props.postagens.curtidas //(estado para gerenciar as curtidas)
     listaDeComentariosDasPostagens.value = props.postagens.comentarios //(estado para armazenar os arrays de comentários para iterar no html)
 
@@ -70,18 +67,18 @@
             await feedService.alterarCurtida(itensDaPostagem.value.id);
             if (usuarioLogadoCurtiuPostagem()) {
                 // tiro o usuario logado da lista de curtidas
-                listaDeCurtidasPostagem.value = listaDeCurtidasPostagem.value.filter(idUsuarioQueCurtiu => idUsuarioQueCurtiu !== usuarioLogado.id)
+                listaDeCurtidasPostagem.value = listaDeCurtidasPostagem?.value?.filter(idUsuarioQueCurtiu => idUsuarioQueCurtiu !== usuarioLogado?.id)
             }
             else { 
                 // insiro o usuario logado da lista de curtidas
-                listaDeCurtidasPostagem.value.push(usuarioLogado.id)
+                listaDeCurtidasPostagem?.value?.push(usuarioLogado?.id)
             }
         } catch (e) {
             alert(`Erro ao alterar a curtida! ` + (e?.response?.data?.erro || ''));
         }
     }
 
-    const usuarioLogadoCurtiuPostagem = () => listaDeCurtidasPostagem.value.includes(usuarioLogado.id)
+    const usuarioLogadoCurtiuPostagem = () => listaDeCurtidasPostagem?.value?.includes(usuarioLogado?.id)
 
      const obterImagemCurtida = () => {
         return usuarioLogadoCurtiuPostagem()
@@ -94,7 +91,7 @@
         try {
             await feedService.adicionarComentario(itensDaPostagem.value.id, comentario);
             deveExibirSecaoParaComentar.value = false;
-            listaDeComentariosDasPostagens.value.push({nome: usuarioLogado.nome, mensagem: comentario})
+            listaDeComentariosDasPostagens.value.push({nome: usuarioLogado?.nome, mensagem: comentario})
             console.log('listaDeComentariosDasPostagens', listaDeComentariosDasPostagens.value)
         } catch (e) {
             alert(`Erro ao fazer comentario! ` + (e?.response?.data?.erro || ''));
